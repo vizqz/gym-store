@@ -41,12 +41,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
     >
       <CardContent className="p-0">
         {/* Product Image */}
-        <div className="aspect-square relative overflow-hidden bg-muted">
+        <div className="aspect-square relative overflow-hidden bg-gradient-to-br from-muted to-muted/80">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute top-2 left-2 flex gap-1">
             {product.featured && (
               <Badge className="bg-fitness-yellow text-fitness-black text-xs">
