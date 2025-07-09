@@ -26,17 +26,36 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface DeliveryInfo {
+  method: "pickup" | "delivery";
+  location?: "main-gym" | "branch-gym";
+  address?: string;
+  district?: string;
+  reference?: string;
+}
+
+export interface PaymentInfo {
+  method: "cash" | "yape" | "whatsapp";
+  details?: string;
+}
+
 export interface Order {
   id: number;
+  customerId: number;
   items: CartItem[];
   customerName: string;
   customerPhone: string;
+  customerEmail?: string;
+  delivery: DeliveryInfo;
+  payment: PaymentInfo;
+  total: number;
+  status: "pending" | "confirmed" | "in-progress" | "delivered" | "cancelled";
+  date: string;
+  estimatedDelivery?: string;
+  // Legacy fields for backward compatibility
   customerAddress: string;
   deliveryMethod: "pickup" | "delivery";
   location: "main-gym" | "branch-gym";
-  total: number;
-  status: "pending" | "confirmed" | "delivered";
-  date: string;
 }
 
 export interface User {
@@ -56,6 +75,25 @@ export interface AuthResponse {
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface GymLocation {
+  id: "main-gym" | "branch-gym";
+  name: string;
+  address: string;
+  phone: string;
+  hours?: string;
+  description?: string;
+}
+
+export interface CustomerReview {
+  id: number;
+  orderId: number;
+  productId: number;
+  customerId: number;
+  rating: number;
+  comment: string;
+  date: string;
 }
 
 export interface DashboardStats {
