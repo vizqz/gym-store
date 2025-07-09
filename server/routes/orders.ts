@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { OrdersResponse } from "@shared/api";
-import { mockOrders } from "@shared/mockData";
+import { OrdersResponse } from "../../shared/api";
+import { mockOrders } from "../../shared/mockData";
 
 export const handleGetOrders: RequestHandler = (req, res) => {
   try {
