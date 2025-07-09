@@ -21,5 +21,19 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Authentication routes
+  app.post("/api/auth/login", handleLogin);
+
+  // Product routes
+  app.get("/api/products", handleGetProducts);
+  app.get("/api/products/:id", handleGetProduct);
+
+  // Order routes
+  app.get("/api/orders", handleGetOrders);
+  app.patch("/api/orders/:id", handleUpdateOrder);
+
+  // Dashboard routes
+  app.get("/api/dashboard", handleGetDashboard);
+
   return app;
 }
