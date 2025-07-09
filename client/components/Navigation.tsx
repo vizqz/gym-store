@@ -1,12 +1,33 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, Search, User } from "lucide-react";
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  Search,
+  User,
+  LogOut,
+  Shield,
+  Briefcase,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
+  const { getCartItemCount } = useCart();
 
   const navItems = [
     { href: "/", label: "Inicio" },
@@ -64,18 +85,84 @@ export function Navigation() {
               <Search className="h-4 w-4" />
             </Button>
 
-            {/* User */}
-            <Button variant="ghost" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
+            {/* User Menu */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="relative">
+                    <User className="h-4 w-4" />
+                    <Badge
+                      variant={
+                        user.role === "admin"
+                          ? "destructive"
+                          : user.role === "worker"
+                            ? "secondary"
+                            : "default"
+                      }
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs"
+                    >
+                      {user.role === "admin"
+                        ? "A"
+                        : user.role === "worker"
+                          ? "E"
+                          : "C"}
+                    </Badge>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  {user.role === "admin" && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Panel de Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {(user.role === "admin" || user.role === "worker") && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/worker" className="cursor-pointer">
+                        <Briefcase className="h-4 w-4 mr-2" />
+                        Panel de Empleado
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {(user.role === "admin" || user.role === "worker") && (
+                    <DropdownMenuSeparator />
+                  )}
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/login">
+                  <User className="h-4 w-4 mr-1" />
+                  Ingresar
+                </Link>
+              </Button>
+            )}
 
             {/* Cart */}
             <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                  0
-                </span>
+                {getCartItemCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {getCartItemCount()}
+                  </span>
+                )}
               </Button>
             </Link>
 

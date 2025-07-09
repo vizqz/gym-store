@@ -43,5 +43,27 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: "user" | "admin";
+  password: string;
+  role: "customer" | "worker" | "admin";
+  createdAt: string;
+}
+
+export interface AuthResponse {
+  user: Omit<User, "password">;
+  token: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface DashboardStats {
+  totalSales: number;
+  monthlyRevenue: number;
+  totalOrders: number;
+  mostSoldProducts: Array<{
+    product: Product;
+    totalSold: number;
+  }>;
 }

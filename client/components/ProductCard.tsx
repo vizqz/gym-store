@@ -3,6 +3,8 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/types";
 
 interface ProductCardProps {
@@ -11,6 +13,18 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addItem(product.id, 1);
+    toast({
+      title: "¡Producto agregado!",
+      description: `${product.name} se agregó a tu carrito`,
+      duration: 2000,
+    });
+  };
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -28,18 +42,19 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <Card
       className={cn(
-        "group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-fitness-yellow/30 overflow-hidden",
+        "group hover:shadow-2xl transition-all duration-500 border-border/50 hover:border-fitness-yellow/50 overflow-hidden hover:shadow-fitness-yellow/20 bg-gradient-to-br from-card to-card/80",
         className,
       )}
     >
       <CardContent className="p-0">
         {/* Product Image */}
-        <div className="aspect-square relative overflow-hidden bg-muted">
+        <div className="aspect-square relative overflow-hidden bg-gradient-to-br from-muted to-muted/80">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute top-2 left-2 flex gap-1">
             {product.featured && (
               <Badge className="bg-fitness-yellow text-fitness-black text-xs">
@@ -88,15 +103,16 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-fitness-yellow">
-                ${product.price}
+                S/. {product.price.toFixed(2)}
               </span>
-              <span className="text-xs text-muted-foreground">MXN</span>
+              <span className="text-xs text-muted-foreground">PEN</span>
             </div>
             <Button
               size="sm"
-              className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
+              onClick={handleAddToCart}
+              className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              <ShoppingCart className="h-4 w-4 mr-1" />
+              <ShoppingCart className="h-4 w-4 mr-1 group-hover:animate-pulse" />
               Agregar
             </Button>
           </div>
