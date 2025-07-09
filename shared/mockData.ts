@@ -346,7 +346,7 @@ export const gymLocations = [
 export const mockUsers: User[] = [
   {
     id: 1,
-    name: "Administrador",
+    name: "Roberto Administrador",
     email: "admin@stylofit.com",
     password: "admin123",
     role: "admin",
@@ -354,7 +354,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 2,
-    name: "Empleado",
+    name: "María Empleada",
     email: "worker@stylofit.com",
     password: "worker123",
     role: "worker",
@@ -362,11 +362,27 @@ export const mockUsers: User[] = [
   },
   {
     id: 3,
-    name: "Cliente",
+    name: "Carlos Cliente",
     email: "customer@stylofit.com",
     password: "customer123",
     role: "customer",
     createdAt: "2024-02-01T00:00:00Z",
+  },
+  {
+    id: 4,
+    name: "Ana Supervisora",
+    email: "supervisor@stylofit.com",
+    password: "super123",
+    role: "worker",
+    createdAt: "2024-01-20T00:00:00Z",
+  },
+  {
+    id: 5,
+    name: "Diego Vendedor",
+    email: "vendedor@stylofit.com",
+    password: "vendedor123",
+    role: "worker",
+    createdAt: "2024-02-10T00:00:00Z",
   },
 ];
 
