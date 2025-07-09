@@ -1,8 +1,26 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, Search, User } from "lucide-react";
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  Search,
+  User,
+  LogOut,
+  Shield,
+  Briefcase,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
