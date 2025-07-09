@@ -30,8 +30,9 @@ export const mockProducts: Product[] = [
     name: "Whey Protein Gold Standard",
     description:
       "Proteína de suero de alta calidad con 24g de proteína por porción. Ideal para el crecimiento muscular y recuperación post-entrenamiento. Disponible en múltiples sabores deliciosos.",
-    price: 89.99,
-    image: "/api/placeholder/300/300",
+    price: 189.5,
+    image:
+      "https://via.placeholder.com/300x300/FFBF00/000000?text=Whey+Protein",
     category: "protein",
     stock: 25,
     rating: 4.8,
@@ -45,8 +46,8 @@ export const mockProducts: Product[] = [
     name: "Creatina Monohidrato Micronizada",
     description:
       "Creatina monohidrato pura al 99.9%, micronizada para mejor absorción. Aumenta la fuerza, potencia y masa muscular. Sin sabor, fácil de mezclar.",
-    price: 45.5,
-    image: "/api/placeholder/300/300",
+    price: 85.9,
+    image: "https://via.placeholder.com/300x300/FF6B35/FFFFFF?text=Creatina",
     category: "creatine",
     stock: 30,
     rating: 4.7,
@@ -59,8 +60,8 @@ export const mockProducts: Product[] = [
     name: "Hydroxycut Hardcore Elite",
     description:
       "Quemador de grasa termogénico avanzado con cafeína y extractos naturales. Ayuda a acelerar el metabolismo y aumentar la energía durante los entrenamientos.",
-    price: 67.8,
-    image: "/api/placeholder/300/300",
+    price: 125.75,
+    image: "https://via.placeholder.com/300x300/FF0000/FFFFFF?text=Fat+Burner",
     category: "fat-burner",
     stock: 15,
     rating: 4.3,
@@ -73,8 +74,8 @@ export const mockProducts: Product[] = [
     name: "Multivitamínico Animal Pak",
     description:
       "Complejo vitamínico completo diseñado para atletas. Contiene vitaminas, minerales, aminoácidos y antioxidantes esenciales para el rendimiento deportivo.",
-    price: 78.9,
-    image: "/api/placeholder/300/300",
+    price: 145.2,
+    image: "https://via.placeholder.com/300x300/00AA44/FFFFFF?text=Vitaminas",
     category: "vitamins",
     stock: 20,
     rating: 4.6,
@@ -86,53 +87,15 @@ export const mockProducts: Product[] = [
     name: "Whey Protein Isolate Zero",
     description:
       "Proteína aislada de suero sin lactosa, carbohidratos ni grasas. Perfecta para dietas de definición. Absorción rápida y excelente sabor.",
-    price: 95.0,
-    image: "/api/placeholder/300/300",
+    price: 195.0,
+    image:
+      "https://via.placeholder.com/300x300/FFBF00/000000?text=Protein+Zero",
     category: "protein",
     stock: 18,
     rating: 4.9,
     reviews: [],
     brand: "Dymatize",
     featured: true,
-  },
-  {
-    id: 6,
-    name: "L-Carnitina Líquida",
-    description:
-      "L-Carnitina en forma líquida para mejor absorción. Ayuda en la utilización de grasas como fuente de energía y mejora el rendimiento cardiovascular.",
-    price: 52.3,
-    image: "/api/placeholder/300/300",
-    category: "fat-burner",
-    stock: 22,
-    rating: 4.4,
-    reviews: [],
-    brand: "Applied Nutrition",
-  },
-  {
-    id: 7,
-    name: "Vitamina D3 + K2",
-    description:
-      "Combinación sinérgica de Vitamina D3 y K2 para la salud ósea, sistema inmunológico y absorción de calcio. Esencial para atletas.",
-    price: 34.99,
-    image: "/api/placeholder/300/300",
-    category: "vitamins",
-    stock: 35,
-    rating: 4.5,
-    reviews: [],
-    brand: "Life Extension",
-  },
-  {
-    id: 8,
-    name: "Creatina HCL Ultra",
-    description:
-      "Creatina HCL de nueva generación con mejor solubilidad y absorción. No requiere fase de carga y reduce la retención de agua.",
-    price: 58.75,
-    image: "/api/placeholder/300/300",
-    category: "creatine",
-    stock: 12,
-    rating: 4.6,
-    reviews: [],
-    brand: "Kaged Muscle",
   },
 ];
 
