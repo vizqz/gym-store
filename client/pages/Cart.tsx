@@ -331,7 +331,7 @@ export default function Cart() {
 
                 <Button
                   variant="outline"
-                  onClick={clearCart}
+                  onClick={handleClearCart}
                   className="w-full"
                 >
                   Vaciar carrito
