@@ -1,4 +1,4 @@
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -13,8 +13,11 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
-  const { addItem } = useCart();
+  const { addItem, isProductInCart, getProductQuantityInCart } = useCart();
   const { toast } = useToast();
+
+  const isInCart = isProductInCart(product.id);
+  const quantityInCart = getProductQuantityInCart(product.id);
 
   const handleAddToCart = () => {
     addItem(product.id, 1);
@@ -66,6 +69,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 Más vendido
               </Badge>
             )}
+            {isInCart && (
+              <Badge className="bg-green-600 text-white text-xs flex items-center gap-1">
+                <Check className="h-3 w-3" />
+                En Carrito ({quantityInCart})
+              </Badge>
+            )}
           </div>
           <div className="absolute top-2 right-2">
             <Badge variant="secondary" className="text-xs">
@@ -110,10 +119,23 @@ export function ProductCard({ product, className }: ProductCardProps) {
             <Button
               size="sm"
               onClick={handleAddToCart}
-              className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className={cn(
+                "hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl",
+                isInCart
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90",
+              )}
             >
-              <ShoppingCart className="h-4 w-4 mr-1 group-hover:animate-pulse" />
-              Agregar
+              {isInCart ? (
+                <>
+                  <Check className="h-4 w-4 mr-1" />✓ Agregado
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="h-4 w-4 mr-1 group-hover:animate-pulse" />
+                  Agregar
+                </>
+              )}
             </Button>
           </div>
         </div>

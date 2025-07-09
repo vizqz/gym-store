@@ -17,6 +17,8 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import WorkerPanel from "./pages/WorkerPanel";
+import MyOrders from "./pages/MyOrders";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +53,18 @@ const App = () => (
                     <WorkerPanel />
                   </ProtectedRoute>
                 }
+              />
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <MyOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order-confirmation"
+                element={<OrderConfirmation />}
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

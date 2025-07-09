@@ -48,7 +48,25 @@ export default function Login() {
     const success = await login({ email, password });
 
     if (success) {
-      navigate("/");
+      // Redirect based on user role
+      const userData = localStorage.getItem("userData");
+      if (userData) {
+        const user = JSON.parse(userData);
+        switch (user.role) {
+          case "admin":
+            navigate("/admin");
+            break;
+          case "worker":
+            navigate("/worker");
+            break;
+          case "customer":
+          default:
+            navigate("/");
+            break;
+        }
+      } else {
+        navigate("/");
+      }
     } else {
       setError("Credenciales incorrectas. Intenta nuevamente.");
     }
