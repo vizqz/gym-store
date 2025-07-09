@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Minus,
   Plus,
@@ -9,15 +9,14 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { CheckoutForm } from "@/components/CheckoutForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Product } from "@shared/types";
 import { ProductsResponse } from "@shared/api";
 
@@ -25,9 +24,10 @@ export default function Cart() {
   const { items, updateQuantity, removeItem, clearCart, getCartTotal } =
     useCart();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [deliveryMethod, setDeliveryMethod] = useState("delivery");
   const [showCheckout, setShowCheckout] = useState(false);
 
   const handleRemoveItem = (productId: number, productName: string) => {
@@ -48,15 +48,27 @@ export default function Cart() {
     });
   };
 
-  const handleConfirmOrder = () => {
-    // Simulate order processing
-    toast({
-      title: "¡Pedido confirmado!",
-      description: `Tu orden por S/. ${total.toFixed(2)} ha sido procesada exitosamente`,
-      duration: 5000,
-    });
+  const handleOrderComplete = (orderData: any) => {
     clearCart();
-    setShowCheckout(false);
+    toast({
+      title: "¡Pedido completado!",
+      description: "Tu orden ha sido procesada exitosamente",
+      duration: 3000,
+    });
+    navigate("/order-confirmation", { state: { orderData } });
+  };
+
+  const handleProceedToCheckout = () => {
+    if (!user) {
+      toast({
+        title: "Inicia sesión",
+        description: "Debes iniciar sesión para continuar con la compra",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    setShowCheckout(true);
   };
 
   useEffect(() => {
@@ -96,8 +108,6 @@ export default function Cart() {
     .filter((item) => item.product);
 
   const subtotal = getCartTotal(products);
-  const deliveryFee = deliveryMethod === "delivery" ? 15.0 : 0;
-  const total = subtotal + deliveryFee;
 
   const featuredProducts = products.filter((p) => p.featured).slice(0, 3);
 
@@ -294,57 +304,19 @@ export default function Cart() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal:</span>
-                    <span>S/. {subtotal.toFixed(2)}</span>
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Subtotal:</span>
+                    <span className="text-fitness-yellow">
+                      S/. {subtotal.toFixed(2)}
+                    </span>
                   </div>
-
-                  {/* Delivery Method */}
-                  <div className="space-y-3">
-                    <Label>Método de entrega:</Label>
-                    <RadioGroup
-                      value={deliveryMethod}
-                      onValueChange={setDeliveryMethod}
-                      className="space-y-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="delivery" id="delivery" />
-                        <Label
-                          htmlFor="delivery"
-                          className="flex-1 cursor-pointer"
-                        >
-                          Delivery (S/. 15.00)
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="pickup" id="pickup" />
-                        <Label
-                          htmlFor="pickup"
-                          className="flex-1 cursor-pointer"
-                        >
-                          Recojo en tienda (Gratis)
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Envío:</span>
-                    <span>S/. {deliveryFee.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total:</span>
-                  <span className="text-fitness-yellow">
-                    S/. {total.toFixed(2)}
-                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    Los costos de envío se calcularán en el checkout
+                  </p>
                 </div>
 
                 <Button
-                  onClick={() => setShowCheckout(!showCheckout)}
+                  onClick={handleProceedToCheckout}
                   className="w-full bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90 text-lg py-3"
                 >
                   <CreditCard className="h-5 w-5 mr-2" />
@@ -363,36 +335,13 @@ export default function Cart() {
 
             {/* Checkout Form */}
             {showCheckout && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Datos de Entrega</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nombre completo</Label>
-                    <Input id="name" placeholder="Ingresa tu nombre" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Teléfono</Label>
-                    <Input id="phone" placeholder="+51 987 654 321" />
-                  </div>
-                  {deliveryMethod === "delivery" && (
-                    <div className="space-y-2">
-                      <Label htmlFor="address">Dirección</Label>
-                      <Input
-                        id="address"
-                        placeholder="Av. Lima 123, San Isidro"
-                      />
-                    </div>
-                  )}
-                  <Button
-                    onClick={handleConfirmOrder}
-                    className="w-full bg-green-600 hover:bg-green-700"
-                  >
-                    Confirmar Pedido
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="lg:col-span-2">
+                <CheckoutForm
+                  products={products}
+                  total={subtotal}
+                  onOrderComplete={handleOrderComplete}
+                />
+              </div>
             )}
           </div>
         </div>
