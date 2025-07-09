@@ -27,6 +27,7 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { getCartItemCount } = useCart();
 
   const navItems = [
     { href: "/", label: "Inicio" },
