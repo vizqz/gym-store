@@ -374,7 +374,10 @@ export default function Cart() {
                       />
                     </div>
                   )}
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                  <Button
+                    onClick={handleConfirmOrder}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
                     Confirmar Pedido
                   </Button>
                 </CardContent>
