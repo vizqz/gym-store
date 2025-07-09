@@ -88,9 +88,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-fitness-yellow">
-                ${product.price}
+                S/. {product.price.toFixed(2)}
               </span>
-              <span className="text-xs text-muted-foreground">MXN</span>
+              <span className="text-xs text-muted-foreground">PEN</span>
             </div>
             <Button
               size="sm"
