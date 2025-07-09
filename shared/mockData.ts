@@ -120,3 +120,87 @@ export const gymLocations = [
     phone: "+52 55 8765-4321",
   },
 ];
+
+export const mockUsers: User[] = [
+  {
+    id: 1,
+    name: "Administrador",
+    email: "admin@stylofit.com",
+    password: "admin123",
+    role: "admin",
+    createdAt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: 2,
+    name: "Empleado",
+    email: "worker@stylofit.com",
+    password: "worker123",
+    role: "worker",
+    createdAt: "2024-01-15T00:00:00Z",
+  },
+  {
+    id: 3,
+    name: "Cliente",
+    email: "customer@stylofit.com",
+    password: "customer123",
+    role: "customer",
+    createdAt: "2024-02-01T00:00:00Z",
+  },
+];
+
+export const mockOrders: Order[] = [
+  {
+    id: 1,
+    items: [
+      { productId: 1, quantity: 2 },
+      { productId: 3, quantity: 1 },
+    ],
+    customerName: "Juan Pérez",
+    customerPhone: "+51 987 654 321",
+    customerAddress: "Av. Lima 123, San Isidro",
+    deliveryMethod: "delivery",
+    location: "main-gym",
+    total: 504.75,
+    status: "delivered",
+    date: "2024-12-01T10:30:00Z",
+  },
+  {
+    id: 2,
+    items: [
+      { productId: 2, quantity: 1 },
+      { productId: 4, quantity: 1 },
+    ],
+    customerName: "María García",
+    customerPhone: "+51 987 123 456",
+    customerAddress: "Jr. Cusco 456, Miraflores",
+    deliveryMethod: "pickup",
+    location: "branch-gym",
+    total: 231.1,
+    status: "confirmed",
+    date: "2024-12-02T14:15:00Z",
+  },
+  {
+    id: 3,
+    items: [{ productId: 5, quantity: 1 }],
+    customerName: "Carlos López",
+    customerPhone: "+51 987 789 012",
+    customerAddress: "Av. Arequipa 789, San Borja",
+    deliveryMethod: "delivery",
+    location: "main-gym",
+    total: 195.0,
+    status: "pending",
+    date: "2024-12-03T09:00:00Z",
+  },
+];
+
+export const mockStats: DashboardStats = {
+  totalSales: 1485.5,
+  monthlyRevenue: 930.85,
+  totalOrders: 3,
+  mostSoldProducts: [
+    { product: mockProducts[0], totalSold: 45 },
+    { product: mockProducts[2], totalSold: 32 },
+    { product: mockProducts[1], totalSold: 28 },
+    { product: mockProducts[4], totalSold: 24 },
+  ],
+};
