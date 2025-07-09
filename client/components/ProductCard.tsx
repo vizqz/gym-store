@@ -14,9 +14,15 @@ interface ProductCardProps {
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const { addItem } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
     addItem(product.id, 1);
+    toast({
+      title: "¡Producto agregado!",
+      description: `${product.name} se agregó a tu carrito`,
+      duration: 2000,
+    });
   };
 
   const renderStars = (rating: number) => {
