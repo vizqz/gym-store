@@ -170,15 +170,15 @@ export default function Shop() {
           </div>
         </div>
 
-        {/* Search and Filters */}
+        {/* Search and Quick Filters */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Buscar productos, marcas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-12 h-12 text-lg border-2 focus:border-fitness-yellow"
             />
           </div>
 
@@ -186,35 +186,15 @@ export default function Shop() {
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               onClick={() => setSelectedCategory(null)}
-              className={
+              className={cn(
+                "h-12 px-6 transition-all duration-300",
                 selectedCategory === null
-                  ? "bg-fitness-yellow text-fitness-black"
-                  : ""
-              }
+                  ? "bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
+                  : "hover:border-fitness-yellow hover:text-fitness-yellow",
+              )}
             >
-              Todos
+              Todos los productos
             </Button>
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={
-                  selectedCategory === category.id ? "default" : "outline"
-                }
-                onClick={() =>
-                  setSelectedCategory(
-                    selectedCategory === category.id ? null : category.id,
-                  )
-                }
-                className={
-                  selectedCategory === category.id
-                    ? "bg-fitness-yellow text-fitness-black"
-                    : ""
-                }
-              >
-                <span className="mr-1">{category.icon}</span>
-                {category.name}
-              </Button>
-            ))}
           </div>
         </div>
 
