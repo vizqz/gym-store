@@ -103,9 +103,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
             <Button
               size="sm"
               onClick={handleAddToCart}
-              className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
+              className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              <ShoppingCart className="h-4 w-4 mr-1" />
+              <ShoppingCart className="h-4 w-4 mr-1 group-hover:animate-pulse" />
               Agregar
             </Button>
           </div>
