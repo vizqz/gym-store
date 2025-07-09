@@ -48,6 +48,17 @@ export default function Cart() {
     });
   };
 
+  const handleConfirmOrder = () => {
+    // Simulate order processing
+    toast({
+      title: "¡Pedido confirmado!",
+      description: `Tu orden por S/. ${total.toFixed(2)} ha sido procesada exitosamente`,
+      duration: 5000,
+    });
+    clearCart();
+    setShowCheckout(false);
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
