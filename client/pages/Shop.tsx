@@ -56,9 +56,22 @@ export default function Shop() {
           const data: ProductsResponse = await response.json();
           setProducts(data.products);
           setFilteredProducts(data.products);
+        } else {
+          // Fallback to imported mock data if API fails
+          const { mockProducts } = await import("@shared/mockData");
+          setProducts(mockProducts);
+          setFilteredProducts(mockProducts);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
+        // Fallback to imported mock data if fetch fails
+        try {
+          const { mockProducts } = await import("@shared/mockData");
+          setProducts(mockProducts);
+          setFilteredProducts(mockProducts);
+        } catch (importError) {
+          console.error("Error importing mock data:", importError);
+        }
       } finally {
         setIsLoading(false);
       }
