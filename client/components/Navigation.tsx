@@ -133,6 +133,17 @@ export function Navigation() {
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  {user.role === "customer" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link to="/my-orders" className="cursor-pointer">
+                          <Package className="h-4 w-4 mr-2" />
+                          Mis Pedidos
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   {(user.role === "admin" || user.role === "worker") && (
                     <DropdownMenuSeparator />
                   )}
