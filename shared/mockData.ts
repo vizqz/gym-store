@@ -255,7 +255,7 @@ export const mockProducts: Product[] = [
   // VITAMINS
   {
     id: 14,
-    name: "Multivitamínico Animal Pak",
+    name: "Multivitam��nico Animal Pak",
     description:
       "Complejo vitamínico completo diseñado para atletas. Contiene vitaminas, minerales, aminoácidos y antioxidantes esenciales para el rendimiento deportivo.",
     price: 145.2,
@@ -477,13 +477,14 @@ export const mockOrders: Order[] = [
 ];
 
 export const mockStats: DashboardStats = {
-  totalSales: 1485.5,
-  monthlyRevenue: 930.85,
-  totalOrders: 3,
+  totalSales: 2487.95,
+  monthlyRevenue: 1756.15,
+  totalOrders: 6,
   mostSoldProducts: [
-    { product: mockProducts[0], totalSold: 45 },
-    { product: mockProducts[2], totalSold: 32 },
-    { product: mockProducts[1], totalSold: 28 },
-    { product: mockProducts[4], totalSold: 24 },
+    { product: mockProducts[0], totalSold: 68 },
+    { product: mockProducts[9], totalSold: 45 },
+    { product: mockProducts[5], totalSold: 42 },
+    { product: mockProducts[1], totalSold: 38 },
+    { product: mockProducts[13], totalSold: 35 },
   ],
 };
