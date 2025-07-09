@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { LoginRequest, AuthResponse } from "@shared/api";
-import { mockUsers } from "@shared/mockData";
+import { LoginRequest, AuthResponse } from "../../shared/api";
+import { mockUsers } from "../../shared/mockData";
 
 export const handleLogin: RequestHandler = (req, res) => {
   try {
