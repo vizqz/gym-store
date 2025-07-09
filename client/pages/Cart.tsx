@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 import { Product } from "@shared/types";
 import { ProductsResponse } from "@shared/api";
 
