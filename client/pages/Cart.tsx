@@ -24,10 +24,29 @@ import { ProductsResponse } from "@shared/api";
 export default function Cart() {
   const { items, updateQuantity, removeItem, clearCart, getCartTotal } =
     useCart();
+  const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deliveryMethod, setDeliveryMethod] = useState("delivery");
   const [showCheckout, setShowCheckout] = useState(false);
+
+  const handleRemoveItem = (productId: number, productName: string) => {
+    removeItem(productId);
+    toast({
+      title: "Producto eliminado",
+      description: `${productName} se eliminó de tu carrito`,
+      variant: "destructive",
+    });
+  };
+
+  const handleClearCart = () => {
+    clearCart();
+    toast({
+      title: "Carrito vaciado",
+      description: "Todos los productos fueron eliminados",
+      variant: "destructive",
+    });
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
