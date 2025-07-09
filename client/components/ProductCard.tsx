@@ -101,6 +101,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
             <Button
               size="sm"
+              onClick={handleAddToCart}
               className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
             >
               <ShoppingCart className="h-4 w-4 mr-1" />
