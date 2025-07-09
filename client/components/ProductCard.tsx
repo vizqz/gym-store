@@ -35,7 +35,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <Card
       className={cn(
-        "group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-fitness-yellow/30 overflow-hidden",
+        "group hover:shadow-2xl transition-all duration-500 border-border/50 hover:border-fitness-yellow/50 overflow-hidden hover:shadow-fitness-yellow/20 bg-gradient-to-br from-card to-card/80",
         className,
       )}
     >
