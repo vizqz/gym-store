@@ -389,90 +389,162 @@ export const mockUsers: User[] = [
 export const mockOrders: Order[] = [
   {
     id: 1,
+    customerId: 3, // Customer user
     items: [
       { productId: 1, quantity: 2 },
       { productId: 10, quantity: 1 },
     ],
     customerName: "Juan Pérez",
     customerPhone: "+51 987 654 321",
-    customerAddress: "Av. Lima 123, San Isidro",
-    deliveryMethod: "delivery",
-    location: "main-gym",
+    customerEmail: "customer@stylofit.com",
+    delivery: {
+      method: "delivery",
+      address: "Av. Lima 123, San Isidro",
+      district: "San Isidro",
+      reference: "Edificio azul, piso 3",
+    },
+    payment: {
+      method: "yape",
+    },
     total: 524.75,
     status: "delivered",
     date: "2024-12-01T10:30:00Z",
+    estimatedDelivery: "2024-12-03T18:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Av. Lima 123, San Isidro",
+    deliveryMethod: "delivery",
+    location: "main-gym",
   },
   {
     id: 2,
+    customerId: 3, // Customer user
     items: [
       { productId: 6, quantity: 1 },
       { productId: 14, quantity: 1 },
     ],
     customerName: "María García",
     customerPhone: "+51 987 123 456",
-    customerAddress: "Jr. Cusco 456, Miraflores",
-    deliveryMethod: "pickup",
-    location: "branch-gym",
+    customerEmail: "customer@stylofit.com",
+    delivery: {
+      method: "pickup",
+      location: "branch-gym",
+    },
+    payment: {
+      method: "cash",
+    },
     total: 231.1,
     status: "confirmed",
     date: "2024-12-02T14:15:00Z",
+    estimatedDelivery: "2024-12-04T16:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Jr. Cusco 456, Miraflores",
+    deliveryMethod: "pickup",
+    location: "branch-gym",
   },
   {
     id: 3,
+    customerId: 4, // Different customer
     items: [{ productId: 2, quantity: 1 }],
     customerName: "Carlos López",
     customerPhone: "+51 987 789 012",
-    customerAddress: "Av. Arequipa 789, San Borja",
-    deliveryMethod: "delivery",
-    location: "main-gym",
+    customerEmail: "carlos@example.com",
+    delivery: {
+      method: "delivery",
+      address: "Av. Arequipa 789, San Borja",
+      district: "San Borja",
+    },
+    payment: {
+      method: "whatsapp",
+    },
     total: 195.0,
     status: "pending",
     date: "2024-12-03T09:00:00Z",
+    estimatedDelivery: "2024-12-05T18:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Av. Arequipa 789, San Borja",
+    deliveryMethod: "delivery",
+    location: "main-gym",
   },
   {
     id: 4,
+    customerId: 5, // Different customer
     items: [
       { productId: 5, quantity: 1 },
       { productId: 11, quantity: 2 },
     ],
     customerName: "Ana Rodríguez",
     customerPhone: "+51 987 321 654",
-    customerAddress: "Calle Los Olivos 456, Surco",
-    deliveryMethod: "delivery",
-    location: "main-gym",
+    customerEmail: "ana@example.com",
+    delivery: {
+      method: "delivery",
+      address: "Calle Los Olivos 456, Surco",
+      district: "Surco",
+      reference: "Casa con jardín",
+    },
+    payment: {
+      method: "cash",
+    },
     total: 374.8,
     status: "confirmed",
     date: "2024-12-04T11:20:00Z",
+    estimatedDelivery: "2024-12-06T18:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Calle Los Olivos 456, Surco",
+    deliveryMethod: "delivery",
+    location: "main-gym",
   },
   {
     id: 5,
+    customerId: 6, // Different customer
     items: [
       { productId: 16, quantity: 1 },
       { productId: 17, quantity: 2 },
     ],
     customerName: "Roberto Silva",
     customerPhone: "+51 987 456 789",
-    customerAddress: "Av. Brasil 789, Pueblo Libre",
-    deliveryMethod: "pickup",
-    location: "branch-gym",
+    customerEmail: "roberto@example.com",
+    delivery: {
+      method: "pickup",
+      location: "branch-gym",
+    },
+    payment: {
+      method: "yape",
+    },
     total: 180.75,
     status: "delivered",
     date: "2024-12-05T16:45:00Z",
+    estimatedDelivery: "2024-12-07T16:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Av. Brasil 789, Pueblo Libre",
+    deliveryMethod: "pickup",
+    location: "branch-gym",
   },
   {
     id: 6,
+    customerId: 7, // Different customer
     items: [
       { productId: 7, quantity: 1 },
       { productId: 13, quantity: 1 },
     ],
     customerName: "Lucia Mendoza",
     customerPhone: "+51 987 654 987",
-    customerAddress: "Jr. Junín 321, Centro de Lima",
-    deliveryMethod: "delivery",
-    location: "main-gym",
+    customerEmail: "lucia@example.com",
+    delivery: {
+      method: "delivery",
+      address: "Jr. Junín 321, Centro de Lima",
+      district: "Lima",
+    },
+    payment: {
+      method: "cash",
+    },
     total: 290.75,
     status: "pending",
     date: "2024-12-06T08:30:00Z",
+    estimatedDelivery: "2024-12-08T18:00:00Z",
+    // Legacy fields for compatibility
+    customerAddress: "Jr. Junín 321, Centro de Lima",
+    deliveryMethod: "delivery",
+    location: "main-gym",
   },
 ];
 
