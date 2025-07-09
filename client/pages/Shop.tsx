@@ -95,14 +95,79 @@ export default function Shop() {
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-fitness-yellow to-orange-500 bg-clip-text text-transparent">
             Tienda de Suplementos
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Encuentra los mejores suplementos para tu entrenamiento en Stylo
-            Fitness Store.
+          <p className="text-muted-foreground text-xl max-w-3xl mx-auto leading-relaxed">
+            Descubre los mejores suplementos para maximizar tu rendimiento y
+            alcanzar tus objetivos fitness
           </p>
+        </div>
+
+        {/* Category Cards */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
+            Explora por Categorías
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category) => {
+              const IconComponent = category.icon;
+              const isSelected = selectedCategory === category.id;
+
+              return (
+                <Card
+                  key={category.id}
+                  className={cn(
+                    "group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-2",
+                    isSelected
+                      ? "border-fitness-yellow shadow-lg scale-105"
+                      : "border-border hover:border-fitness-yellow/50",
+                  )}
+                  onClick={() =>
+                    setSelectedCategory(
+                      selectedCategory === category.id ? null : category.id,
+                    )
+                  }
+                >
+                  <CardContent className="p-6 text-center">
+                    <div
+                      className={cn(
+                        "w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br transition-all duration-300",
+                        category.gradient,
+                        "group-hover:scale-110",
+                      )}
+                    >
+                      <IconComponent className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-fitness-yellow transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {category.description}
+                    </p>
+                    <div className="mt-4">
+                      <Badge
+                        variant={isSelected ? "default" : "outline"}
+                        className={
+                          isSelected
+                            ? "bg-fitness-yellow text-fitness-black"
+                            : ""
+                        }
+                      >
+                        {
+                          filteredProducts.filter(
+                            (p) => p.category === category.id,
+                          ).length
+                        }{" "}
+                        productos
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
 
         {/* Search and Filters */}
