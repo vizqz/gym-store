@@ -234,17 +234,24 @@ export default function Shop() {
 
         {/* Products Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-card border border-border rounded-lg p-4 animate-pulse"
-              >
-                <div className="bg-muted h-48 rounded-lg mb-4"></div>
-                <div className="bg-muted h-4 rounded mb-2"></div>
-                <div className="bg-muted h-4 rounded w-3/4"></div>
-              </div>
-            ))}
+          <div className="space-y-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fitness-yellow mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Cargando productos...</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-card border border-border rounded-lg p-4 animate-pulse"
+                >
+                  <div className="bg-muted h-48 rounded-lg mb-4"></div>
+                  <div className="bg-muted h-4 rounded mb-2"></div>
+                  <div className="bg-muted h-4 rounded w-3/4 mb-2"></div>
+                  <div className="bg-muted h-6 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-12">
