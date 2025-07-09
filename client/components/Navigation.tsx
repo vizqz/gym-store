@@ -158,9 +158,11 @@ export function Navigation() {
             <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                  0
-                </span>
+                {getCartItemCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {getCartItemCount()}
+                  </span>
+                )}
               </Button>
             </Link>
 
