@@ -25,6 +25,7 @@ import { useAuth } from "@/hooks/useAuth";
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const navItems = [
     { href: "/", label: "Inicio" },
