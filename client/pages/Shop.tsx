@@ -248,21 +248,32 @@ export default function Shop() {
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
+            <div className="text-6xl mb-4">
+              {products.length === 0 ? "📦" : "🔍"}
+            </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              No se encontraron productos
+              {products.length === 0
+                ? "No hay productos disponibles"
+                : "No se encontraron productos"}
             </h3>
             <p className="text-muted-foreground mb-4">
-              Intenta cambiar los filtros o buscar con otros términos.
+              {products.length === 0
+                ? "Los productos se están cargando. Por favor, intenta nuevamente."
+                : "Intenta cambiar los filtros o buscar con otros términos."}
             </p>
             <Button
               onClick={() => {
                 setSearchTerm("");
                 setSelectedCategory(null);
+                if (products.length === 0) {
+                  window.location.reload();
+                }
               }}
               className="bg-fitness-yellow text-fitness-black"
             >
-              Ver todos los productos
+              {products.length === 0
+                ? "Recargar página"
+                : "Ver todos los productos"}
             </Button>
           </div>
         ) : (
