@@ -18,10 +18,34 @@ export default function Shop() {
   const [isLoading, setIsLoading] = useState(true);
 
   const categories = [
-    { id: "protein", name: "Proteínas", icon: "💪" },
-    { id: "creatine", name: "Creatina", icon: "⚡" },
-    { id: "fat-burner", name: "Quemadores", icon: "🔥" },
-    { id: "vitamins", name: "Vitaminas", icon: "🌟" },
+    {
+      id: "protein",
+      name: "Proteínas",
+      icon: Dumbbell,
+      description: "Para crecimiento muscular",
+      gradient: "from-blue-500 to-blue-600",
+    },
+    {
+      id: "creatine",
+      name: "Creatina",
+      icon: Zap,
+      description: "Aumenta tu fuerza",
+      gradient: "from-purple-500 to-purple-600",
+    },
+    {
+      id: "fat-burner",
+      name: "Quemadores",
+      icon: Flame,
+      description: "Acelera tu metabolismo",
+      gradient: "from-red-500 to-red-600",
+    },
+    {
+      id: "vitamins",
+      name: "Vitaminas",
+      icon: Sparkles,
+      description: "Salud y bienestar",
+      gradient: "from-green-500 to-green-600",
+    },
   ];
 
   useEffect(() => {
