@@ -12,6 +12,12 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    addItem(product.id, 1);
+  };
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
