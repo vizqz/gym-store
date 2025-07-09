@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { DashboardResponse } from "@shared/api";
-import { mockStats, mockUsers } from "@shared/mockData";
+import { DashboardResponse } from "../../shared/api";
+import { mockStats, mockUsers } from "../../shared/mockData";
 
 export const handleGetDashboard: RequestHandler = (req, res) => {
   try {
