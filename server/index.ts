@@ -5,6 +5,7 @@ import { handleLogin } from "./routes/auth";
 import { handleGetProducts, handleGetProduct } from "./routes/products";
 import { handleGetOrders, handleUpdateOrder } from "./routes/orders";
 import { handleGetDashboard } from "./routes/dashboard";
+import { handleGetCustomerOrders } from "./routes/customer";
 
 export function createServer() {
   const app = express();
@@ -31,6 +32,7 @@ export function createServer() {
   // Order routes
   app.get("/api/orders", handleGetOrders);
   app.patch("/api/orders/:id", handleUpdateOrder);
+  app.get("/api/orders/customer/:customerId", handleGetCustomerOrders);
 
   // Dashboard routes
   app.get("/api/dashboard", handleGetDashboard);
