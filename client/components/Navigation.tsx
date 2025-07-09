@@ -21,6 +21,7 @@ import {
 } from "./ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
