@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/hooks/useCart";
 import type { Product } from "@shared/types";
 
 interface ProductCardProps {
