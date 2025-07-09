@@ -8,6 +8,7 @@ import {
   LogOut,
   Shield,
   Briefcase,
+  Package,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
