@@ -66,22 +66,42 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-fitness-yellow",
-                  isActive(item.href)
-                    ? "text-fitness-yellow"
-                    : "text-foreground/80",
+          {showMainNav && (
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-fitness-yellow",
+                    isActive(item.href)
+                      ? "text-fitness-yellow"
+                      : "text-foreground/80",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Dashboard Panel Navigation for Admin/Worker */}
+          {!showMainNav && user && (
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                {user.role === "admin" ? (
+                  <Shield className="h-4 w-4 text-fitness-yellow" />
+                ) : (
+                  <Briefcase className="h-4 w-4 text-fitness-yellow" />
                 )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+                <span className="text-foreground font-medium">
+                  {user.role === "admin"
+                    ? "Panel de Administración"
+                    : "Panel de Empleado"}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
