@@ -198,7 +198,11 @@ export default function Cart() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link to="/shop">
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              className="hover:bg-fitness-yellow hover:text-fitness-black"
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Seguir comprando
             </Button>
