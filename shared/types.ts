@@ -35,7 +35,7 @@ export interface DeliveryInfo {
 }
 
 export interface PaymentInfo {
-  method: "cash" | "yape" | "whatsapp";
+  method: "cash" | "yape" | "whatsapp" | "card" | "bank";
   details?: string;
 }
 
