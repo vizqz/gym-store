@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
 import { DashboardResponse } from "../../shared/api";
-import { mockStats, mockUsers } from "../../shared/mockData";
+import { mockStats } from "../../shared/mockData";
+import { getUsers } from "../data/users";
 
 export const handleGetDashboard: RequestHandler = (req, res) => {
   try {
     // Get workers (exclude customers and remove passwords)
-    const workers = mockUsers
+    const workers = getUsers()
       .filter((user) => user.role === "admin" || user.role === "worker")
       .map(({ password, ...user }) => user);
 
