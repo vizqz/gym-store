@@ -232,24 +232,51 @@ export function Navigation() {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-card border-t border-border">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "block px-3 py-2 text-base font-medium rounded-md transition-colors",
-                    isActive(item.href)
-                      ? "text-fitness-yellow bg-fitness-yellow/10"
-                      : "text-foreground/80 hover:text-fitness-yellow hover:bg-fitness-yellow/5",
-                  )}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="px-3 py-2">
-                <SearchDialog />
-              </div>
+              {showMainNav ? (
+                <>
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className={cn(
+                        "block px-3 py-2 text-base font-medium rounded-md transition-colors",
+                        isActive(item.href)
+                          ? "text-fitness-yellow bg-fitness-yellow/10"
+                          : "text-foreground/80 hover:text-fitness-yellow hover:bg-fitness-yellow/5",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div className="px-3 py-2">
+                    <SearchDialog />
+                  </div>
+                </>
+              ) : (
+                <div className="px-3 py-2">
+                  <div className="flex items-center space-x-2 mb-4">
+                    {user?.role === "admin" ? (
+                      <Shield className="h-4 w-4 text-fitness-yellow" />
+                    ) : (
+                      <Briefcase className="h-4 w-4 text-fitness-yellow" />
+                    )}
+                    <span className="text-sm font-medium">
+                      {user?.role === "admin"
+                        ? "Panel de Administración"
+                        : "Panel de Empleado"}
+                    </span>
+                  </div>
+                  <Link
+                    to="/"
+                    className="flex items-center space-x-2 px-3 py-2 text-base font-medium rounded-md text-foreground/80 hover:text-fitness-yellow hover:bg-fitness-yellow/5"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Package className="h-4 w-4" />
+                    <span>Volver a la Tienda</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}
