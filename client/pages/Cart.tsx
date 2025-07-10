@@ -228,9 +228,6 @@ export default function Cart() {
                           <p className="text-sm text-muted-foreground">
                             {item.product!.brand}
                           </p>
-                          <Badge variant="outline" className="mt-1">
-                            {item.product!.category}
-                          </Badge>
                         </div>
                         <Button
                           variant="ghost"
