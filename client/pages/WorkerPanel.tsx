@@ -50,15 +50,6 @@ import { Product, Order, StockMovement } from "@shared/types";
 import { ProductsResponse, OrdersResponse } from "@shared/api";
 import { useAuth } from "@/hooks/useAuth";
 
-interface StockMovement {
-  id: number;
-  productId: number;
-  productName: string;
-  quantity: number;
-  date: string;
-  workerName: string;
-}
-
 export default function WorkerPanel() {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
