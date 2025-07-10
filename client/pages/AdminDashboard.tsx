@@ -744,9 +744,12 @@ export default function AdminDashboard() {
                         <TableRow key={product.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium text-sm">
+                              <Link
+                                to={`/products/${product.id}`}
+                                className="font-medium text-sm hover:text-fitness-yellow transition-colors"
+                              >
                                 {product.name}
-                              </p>
+                              </Link>
                               <p className="text-xs text-muted-foreground">
                                 {product.brand}
                               </p>
