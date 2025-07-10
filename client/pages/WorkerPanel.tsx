@@ -165,30 +165,25 @@ export default function WorkerPanel() {
           body: JSON.stringify({
             quantity: parseInt(stockQuantity),
             workerName: user.name,
+            reason: "Stock añadido manualmente",
           }),
         },
       );
 
       if (response.ok) {
-        const updatedStock = selectedProduct.stock + parseInt(stockQuantity);
+        const data = await response.json();
         setProducts(
           products.map((product) =>
-            product.id === selectedProduct.id
-              ? { ...product, stock: updatedStock }
-              : product,
+            product.id === selectedProduct.id ? data.product : product,
           ),
         );
 
-        // Add to stock movements
-        const newMovement: StockMovement = {
-          id: Date.now(),
-          productId: selectedProduct.id,
-          productName: selectedProduct.name,
-          quantity: parseInt(stockQuantity),
-          date: new Date().toISOString(),
-          workerName: user.name,
-        };
-        setStockMovements([newMovement, ...stockMovements]);
+        // Refresh stock movements from API
+        const movementsRes = await fetch("/api/stock-movements");
+        if (movementsRes.ok) {
+          const movementsData = await movementsRes.json();
+          setStockMovements(movementsData.movements);
+        }
 
         setIsStockDialogOpen(false);
         setSelectedProduct(null);
