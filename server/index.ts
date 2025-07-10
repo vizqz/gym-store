@@ -19,6 +19,10 @@ import {
   handleDeleteUser,
   handleGetUsers,
 } from "./routes/users";
+import {
+  handleGetStockMovements,
+  handleAddStockMovement,
+} from "./routes/stock-movements";
 
 export function createServer() {
   const app = express();
