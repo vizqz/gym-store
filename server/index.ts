@@ -62,6 +62,10 @@ export function createServer() {
   app.patch("/api/users/:id", handleUpdateUser);
   app.delete("/api/users/:id", handleDeleteUser);
 
+  // Stock movements routes
+  app.get("/api/stock-movements", handleGetStockMovements);
+  app.post("/api/stock-movements", handleAddStockMovement);
+
   // Dashboard routes
   app.get("/api/dashboard", handleGetDashboard);
 
