@@ -49,6 +49,7 @@ export function createServer() {
 
   // Order routes
   app.get("/api/orders", handleGetOrders);
+  app.get("/api/orders/:id", handleGetOrder);
   app.patch("/api/orders/:id", handleUpdateOrder);
   app.get("/api/orders/customer/:customerId", handleGetCustomerOrders);
 
