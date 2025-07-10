@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Package,
   Clock,
@@ -10,13 +10,34 @@ import {
   ShoppingBag,
   Star,
   MessageSquare,
+  Eye,
+  MessageCircle,
+  ChevronDown,
+  ChevronUp,
+  CreditCard,
+  Phone,
+  ExternalLink,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 import { Order, Product } from "@shared/types";
 import { ProductsResponse } from "@shared/api";
 import { format } from "date-fns";
@@ -24,10 +45,17 @@ import { es } from "date-fns/locale";
 
 export default function MyOrders() {
   const { user } = useAuth();
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
+  const [cancellingOrderId, setCancellingOrderId] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +96,7 @@ export default function MyOrders() {
                 reference: "Edificio verde, piso 5",
               },
               payment: {
-                method: "yape" as const,
+                method: "card" as const,
               },
               total: 465.9,
               status: "delivered" as const,
@@ -91,7 +119,7 @@ export default function MyOrders() {
                 location: "main-gym" as const,
               },
               payment: {
-                method: "cash" as const,
+                method: "yape" as const,
               },
               total: 145.2,
               status: "confirmed" as const,
@@ -119,7 +147,7 @@ export default function MyOrders() {
                 reference: "Casa blanca con portón negro",
               },
               payment: {
-                method: "whatsapp" as const,
+                method: "bank" as const,
               },
               total: 284.9,
               status: "pending" as const,
@@ -162,6 +190,8 @@ export default function MyOrders() {
         return <Truck className="h-4 w-4 text-purple-500" />;
       case "delivered":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "cancelled":
+        return <Package className="h-4 w-4 text-red-500" />;
       default:
         return <Package className="h-4 w-4 text-gray-500" />;
     }
@@ -190,11 +220,135 @@ export default function MyOrders() {
         return "Efectivo";
       case "yape":
         return "Yape/Plin";
+      case "card":
+        return "Tarjeta";
+      case "bank":
+        return "Transferencia";
       case "whatsapp":
         return "WhatsApp";
       default:
         return method;
     }
+  };
+
+  const getPaymentMethodIcon = (method: string) => {
+    switch (method) {
+      case "cash":
+        return <Package className="h-4 w-4" />;
+      case "yape":
+        return <Phone className="h-4 w-4" />;
+      case "card":
+        return <CreditCard className="h-4 w-4" />;
+      case "bank":
+        return <Package className="h-4 w-4" />;
+      case "whatsapp":
+        return <MessageCircle className="h-4 w-4" />;
+      default:
+        return <Package className="h-4 w-4" />;
+    }
+  };
+
+  const toggleOrderDetails = (orderId: number) => {
+    const newExpanded = new Set(expandedOrders);
+    if (newExpanded.has(orderId)) {
+      newExpanded.delete(orderId);
+    } else {
+      newExpanded.add(orderId);
+    }
+    setExpandedOrders(newExpanded);
+  };
+
+  const handleContactSales = (order: Order) => {
+    const orderProducts = getOrderProducts(order);
+    const productsList = orderProducts
+      .map((item) => `• ${item.product?.name} (x${item.quantity})`)
+      .join("\n");
+
+    const message = `Hola, tengo una consulta sobre mi pedido #${order.id} realizado en Stylo Fitness Store Supplement.
+
+📦 *Detalles del pedido:*
+${productsList}
+
+💰 *Total:* S/. ${order.total.toFixed(2)}
+📅 *Fecha:* ${format(new Date(order.date), "dd MMM yyyy", { locale: es })}
+📋 *Estado:* ${getStatusText(order.status)}
+
+¿Podrían ayudarme con mi consulta?
+
+Gracias.`;
+
+    const phoneNumber = "51987654321"; // Store's WhatsApp number
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, "_blank");
+
+    toast({
+      title: "Abriendo WhatsApp",
+      description: "Se abrirá WhatsApp con tu consulta pre-escrita",
+    });
+  };
+
+  const handleReorder = (order: Order) => {
+    const orderProducts = getOrderProducts(order);
+    let addedItems = 0;
+    let skippedItems = 0;
+
+    orderProducts.forEach((item) => {
+      if (item.product) {
+        // Check if product still exists and has stock
+        if (item.product.stock > 0) {
+          addItem(item.productId, item.quantity);
+          addedItems++;
+        } else {
+          skippedItems++;
+        }
+      } else {
+        skippedItems++;
+      }
+    });
+
+    if (skippedItems > 0) {
+      toast({
+        title: "Algunos productos no están disponibles",
+        description: `${addedItems} productos agregados al carrito. ${skippedItems} productos no disponibles fueron omitidos.`,
+        variant: "default",
+      });
+    } else {
+      toast({
+        title: "¡Productos agregados al carrito!",
+        description: `${addedItems} productos del pedido #${order.id} han sido agregados a tu carrito.`,
+      });
+    }
+
+    // Navigate to cart page
+    navigate("/cart");
+  };
+
+  const handleCancelOrder = (orderId: number) => {
+    // Update order status to cancelled
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId
+          ? { ...order, status: "cancelled" as const }
+          : order,
+      ),
+    );
+
+    toast({
+      title: "Pedido cancelado",
+      description: `El pedido #${orderId} ha sido cancelado exitosamente.`,
+      variant: "default",
+    });
+
+    setCancellingOrderId(null);
+  };
+
+  const canCancelOrder = (status: string) => {
+    return status === "pending" || status === "confirmed";
+  };
+
+  const canReorder = (status: string) => {
+    return status === "delivered" || status === "cancelled";
   };
 
   const filteredOrders = orders.filter((order) => {
@@ -248,18 +402,21 @@ export default function MyOrders() {
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-6">
               <TabsTrigger value="all">Todos</TabsTrigger>
               <TabsTrigger value="pending">Pendiente</TabsTrigger>
               <TabsTrigger value="confirmed">Confirmado</TabsTrigger>
               <TabsTrigger value="in-progress">En Proceso</TabsTrigger>
               <TabsTrigger value="delivered">Entregado</TabsTrigger>
+              <TabsTrigger value="cancelled">Cancelado</TabsTrigger>
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-6">
               <div className="space-y-6">
                 {filteredOrders.map((order) => {
                   const orderProducts = getOrderProducts(order);
+                  const isExpanded = expandedOrders.has(order.id);
+
                   return (
                     <Card key={order.id} className="overflow-hidden">
                       <CardHeader className="pb-4">
@@ -286,10 +443,10 @@ export default function MyOrders() {
                                   ? "Delivery"
                                   : "Recojo en tienda"}
                               </div>
-                              <span>
-                                Pago:{" "}
+                              <div className="flex items-center gap-1">
+                                {getPaymentMethodIcon(order.payment.method)}
                                 {getPaymentMethodText(order.payment.method)}
-                              </span>
+                              </div>
                             </div>
                           </div>
                           <div className="text-right">
@@ -308,7 +465,9 @@ export default function MyOrders() {
                                     ? "bg-blue-600 text-white"
                                     : order.status === "in-progress"
                                       ? "bg-purple-600 text-white"
-                                      : ""
+                                      : order.status === "cancelled"
+                                        ? "bg-red-600 text-white"
+                                        : ""
                               }
                             >
                               {getStatusText(order.status)}
@@ -321,48 +480,123 @@ export default function MyOrders() {
                       </CardHeader>
 
                       <CardContent className="space-y-4">
-                        {/* Order Items */}
+                        {/* Order Items Preview */}
                         <div className="space-y-3">
-                          {orderProducts.map((item) => (
-                            <div
-                              key={item.productId}
-                              className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg"
-                            >
-                              <img
-                                src={item.product?.image || "/placeholder.svg"}
-                                alt={item.product?.name}
-                                className="w-12 h-12 object-cover rounded"
-                              />
-                              <div className="flex-1">
-                                <p className="font-medium text-sm">
-                                  {item.product?.name}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {item.product?.brand} • Cantidad:{" "}
-                                  {item.quantity}
-                                </p>
+                          {orderProducts
+                            .slice(0, isExpanded ? orderProducts.length : 2)
+                            .map((item) => (
+                              <div
+                                key={item.productId}
+                                className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg"
+                              >
+                                <img
+                                  src={
+                                    item.product?.image || "/placeholder.svg"
+                                  }
+                                  alt={item.product?.name}
+                                  className="w-12 h-12 object-cover rounded"
+                                />
+                                <div className="flex-1">
+                                  <p className="font-medium text-sm">
+                                    {item.product?.name}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {item.product?.brand} • Cantidad:{" "}
+                                    {item.quantity}
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-medium">
+                                    S/.{" "}
+                                    {(
+                                      (item.product?.price || 0) * item.quantity
+                                    ).toFixed(2)}
+                                  </p>
+                                  {order.status === "delivered" && (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="mt-1 text-xs"
+                                    >
+                                      <Star className="h-3 w-3 mr-1" />
+                                      Calificar
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
-                              <div className="text-right">
-                                <p className="font-medium">
-                                  S/.{" "}
-                                  {(
-                                    (item.product?.price || 0) * item.quantity
-                                  ).toFixed(2)}
+                            ))}
+
+                          {orderProducts.length > 2 && !isExpanded && (
+                            <div className="text-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleOrderDetails(order.id)}
+                                className="text-muted-foreground"
+                              >
+                                +{orderProducts.length - 2} productos más
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Expanded Details */}
+                        {isExpanded && (
+                          <>
+                            <Separator />
+
+                            {/* Payment Details */}
+                            <div className="bg-muted/20 p-4 rounded-lg">
+                              <h4 className="font-medium mb-2 flex items-center gap-2">
+                                <CreditCard className="h-4 w-4" />
+                                Información de Pago
+                              </h4>
+                              <div className="flex items-center gap-2 text-sm">
+                                {getPaymentMethodIcon(order.payment.method)}
+                                <span>
+                                  Método:{" "}
+                                  {getPaymentMethodText(order.payment.method)}
+                                </span>
+                              </div>
+                              <div className="text-sm text-muted-foreground mt-1">
+                                {order.payment.method === "card" &&
+                                  "Pago procesado con tarjeta"}
+                                {order.payment.method === "yape" &&
+                                  "Pago confirmado via Yape/Plin"}
+                                {order.payment.method === "bank" &&
+                                  "Transferencia bancaria confirmada"}
+                                {order.payment.method === "cash" &&
+                                  (order.delivery.method === "delivery"
+                                    ? "Pago contra entrega"
+                                    : "Pago al recoger en tienda")}
+                              </div>
+                            </div>
+
+                            {/* Customer Info */}
+                            <div className="bg-muted/20 p-4 rounded-lg">
+                              <h4 className="font-medium mb-2 flex items-center gap-2">
+                                <Phone className="h-4 w-4" />
+                                Información de Contacto
+                              </h4>
+                              <div className="text-sm space-y-1">
+                                <p>
+                                  <span className="font-medium">Nombre:</span>{" "}
+                                  {order.customerName}
                                 </p>
-                                {order.status === "delivered" && (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="mt-1 text-xs"
-                                  >
-                                    <Star className="h-3 w-3 mr-1" />
-                                    Calificar
-                                  </Button>
+                                <p>
+                                  <span className="font-medium">Teléfono:</span>{" "}
+                                  {order.customerPhone}
+                                </p>
+                                {order.customerEmail && (
+                                  <p>
+                                    <span className="font-medium">Email:</span>{" "}
+                                    {order.customerEmail}
+                                  </p>
                                 )}
                               </div>
                             </div>
-                          ))}
-                        </div>
+                          </>
+                        )}
 
                         {/* Delivery Info */}
                         <div className="bg-muted/20 p-3 rounded-lg">
@@ -402,6 +636,11 @@ export default function MyOrders() {
                                       ? "Stylo Fitness - Sede Principal"
                                       : "Stylo Fitness - Sucursal Norte"}
                                   </p>
+                                  <p className="text-muted-foreground text-xs">
+                                    {order.delivery.location === "main-gym"
+                                      ? "Av. Revolución 1234, Col. Centro, Lima"
+                                      : "Blvd. Norte 567, Col. Moderna, Lima Norte"}
+                                  </p>
                                 </div>
                               )}
                               {order.estimatedDelivery && (
@@ -421,21 +660,85 @@ export default function MyOrders() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-2 pt-2">
-                          {order.status === "pending" && (
-                            <Button variant="outline" size="sm">
-                              Cancelar Pedido
-                            </Button>
-                          )}
-                          {order.status === "delivered" && (
-                            <Button variant="outline" size="sm">
-                              <MessageSquare className="h-3 w-3 mr-1" />
-                              Contactar Soporte
-                            </Button>
-                          )}
-                          <Button variant="outline" size="sm">
-                            Ver Detalles
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleOrderDetails(order.id)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            {isExpanded ? (
+                              <>
+                                Ocultar Detalles
+                                <ChevronUp className="h-3 w-3 ml-1" />
+                              </>
+                            ) : (
+                              <>
+                                Ver Detalles
+                                <ChevronDown className="h-3 w-3 ml-1" />
+                              </>
+                            )}
                           </Button>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleContactSales(order)}
+                            className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700"
+                          >
+                            <MessageCircle className="h-3 w-3 mr-1" />
+                            Contactar Ventas
+                            <ExternalLink className="h-3 w-3 ml-1" />
+                          </Button>
+
+                          {canCancelOrder(order.status) && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                >
+                                  Cancelar Pedido
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    ¿Cancelar pedido?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    ¿Estás seguro de que quieres cancelar el
+                                    pedido #{order.id}? Esta acción no se puede
+                                    deshacer.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>
+                                    No, mantener pedido
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleCancelOrder(order.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Sí, cancelar pedido
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+
+                          {canReorder(order.status) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleReorder(order)}
+                              className="text-fitness-yellow border-fitness-yellow hover:bg-fitness-yellow hover:text-fitness-black"
+                            >
+                              <ShoppingBag className="h-3 w-3 mr-1" />
+                              Reordenar
+                            </Button>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

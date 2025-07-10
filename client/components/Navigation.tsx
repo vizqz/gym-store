@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import { SearchDialog } from "./SearchDialog";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,9 +83,7 @@ export function Navigation() {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {/* Search */}
-            <Button variant="ghost" size="sm" className="hidden sm:flex">
-              <Search className="h-4 w-4" />
-            </Button>
+            <SearchDialog />
 
             {/* User Menu */}
             {user ? (
@@ -100,7 +99,7 @@ export function Navigation() {
                             ? "secondary"
                             : "default"
                       }
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs flex items-center justify-center font-medium"
                     >
                       {user.role === "admin"
                         ? "A"
@@ -214,14 +213,7 @@ export function Navigation() {
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start"
-                >
-                  <Search className="h-4 w-4 mr-2" />
-                  Buscar productos
-                </Button>
+                <SearchDialog />
               </div>
             </div>
           </div>

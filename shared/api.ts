@@ -25,6 +25,9 @@ export interface DemoResponse {
  */
 export interface LoginResponse extends AuthResponse {}
 
+// Re-export from types for convenience
+export type { AuthResponse, LoginRequest };
+
 export interface UserResponse {
   user: Omit<User, "password">;
 }
