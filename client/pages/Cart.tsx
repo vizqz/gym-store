@@ -9,7 +9,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
-import { CheckoutForm } from "@/components/CheckoutForm";
+import { CheckoutStepper } from "@/components/CheckoutStepper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [showCheckoutStepper, setShowCheckoutStepper] = useState(false);
 
   const handleRemoveItem = (productId: number, productName: string) => {
     removeItem(productId);
@@ -68,7 +68,7 @@ export default function Cart() {
       navigate("/login");
       return;
     }
-    setShowCheckout(true);
+    setShowCheckoutStepper(true);
   };
 
   useEffect(() => {
@@ -305,13 +305,13 @@ export default function Cart() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Subtotal:</span>
+                    <span>Total:</span>
                     <span className="text-fitness-yellow">
                       S/. {subtotal.toFixed(2)}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Los costos de envío se calcularán en el checkout
+                    Delivery estimado: S/. 15.00 (recojo en tienda gratis)
                   </p>
                 </div>
 
@@ -320,7 +320,7 @@ export default function Cart() {
                   className="w-full bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90 text-lg py-3"
                 >
                   <CreditCard className="h-5 w-5 mr-2" />
-                  Proceder al Pago
+                  Finalizar Compra
                 </Button>
 
                 <Button
@@ -333,16 +333,13 @@ export default function Cart() {
               </CardContent>
             </Card>
 
-            {/* Checkout Form */}
-            {showCheckout && (
-              <div className="lg:col-span-2">
-                <CheckoutForm
-                  products={products}
-                  total={subtotal}
-                  onOrderComplete={handleOrderComplete}
-                />
-              </div>
-            )}
+            {/* Checkout Stepper */}
+            <CheckoutStepper
+              products={products}
+              isOpen={showCheckoutStepper}
+              onClose={() => setShowCheckoutStepper(false)}
+              onOrderComplete={handleOrderComplete}
+            />
           </div>
         </div>
       </div>
