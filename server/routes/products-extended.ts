@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { Product } from "@shared/types";
+import { Product } from "../../shared/types";
 import {
   getProducts,
   addProduct,
