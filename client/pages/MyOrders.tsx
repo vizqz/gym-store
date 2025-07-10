@@ -286,6 +286,69 @@ Gracias.`;
     });
   };
 
+  const handleReorder = (order: Order) => {
+    const orderProducts = getOrderProducts(order);
+    let addedItems = 0;
+    let skippedItems = 0;
+
+    orderProducts.forEach((item) => {
+      if (item.product) {
+        // Check if product still exists and has stock
+        if (item.product.stock > 0) {
+          addItem(item.productId, item.quantity);
+          addedItems++;
+        } else {
+          skippedItems++;
+        }
+      } else {
+        skippedItems++;
+      }
+    });
+
+    if (skippedItems > 0) {
+      toast({
+        title: "Algunos productos no están disponibles",
+        description: `${addedItems} productos agregados al carrito. ${skippedItems} productos no disponibles fueron omitidos.`,
+        variant: "default",
+      });
+    } else {
+      toast({
+        title: "¡Productos agregados al carrito!",
+        description: `${addedItems} productos del pedido #${order.id} han sido agregados a tu carrito.`,
+      });
+    }
+
+    // Navigate to cart page
+    navigate("/cart");
+  };
+
+  const handleCancelOrder = (orderId: number) => {
+    // Update order status to cancelled
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId
+          ? { ...order, status: "cancelled" as const }
+          : order,
+      ),
+    );
+
+    toast({
+      title: "Pedido cancelado",
+      description: `El pedido #${orderId} ha sido cancelado exitosamente.`,
+      variant: "default",
+    });
+
+    setCancellingOrderId(null);
+  };
+
+  const canCancelOrder = (status: string) => {
+    return status === "pending" || status === "confirmed";
+  };
+
+  const canReorder = (status: string) => {
+    return status === "delivered" || status === "cancelled";
+  };
+
   const filteredOrders = orders.filter((order) => {
     if (activeTab === "all") return true;
     return order.status === activeTab;
