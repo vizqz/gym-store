@@ -18,6 +18,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import WorkerPanel from "./pages/WorkerPanel";
+import OrderManagement from "./pages/OrderManagement";
 import MyOrders from "./pages/MyOrders";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import NotFound from "./pages/NotFound";
