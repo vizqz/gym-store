@@ -167,7 +167,12 @@ export default function AdminDashboard() {
         const data = await response.json();
         setWorkers([...workers, data.user]);
         setIsWorkerDialogOpen(false);
-        setWorkerForm({ name: "", email: "", password: "", role: "worker" });
+        setWorkerForm({
+          name: "",
+          email: "",
+          password: "",
+          role: "worker" as "worker" | "admin",
+        });
       }
     } catch (error) {
       console.error("Error creating worker:", error);
@@ -191,7 +196,12 @@ export default function AdminDashboard() {
         );
         setIsWorkerDialogOpen(false);
         setEditingWorker(null);
-        setWorkerForm({ name: "", email: "", password: "", role: "worker" });
+        setWorkerForm({
+          name: "",
+          email: "",
+          password: "",
+          role: "worker" as "worker" | "admin",
+        });
       }
     } catch (error) {
       console.error("Error updating worker:", error);
@@ -307,7 +317,12 @@ export default function AdminDashboard() {
       });
     } else {
       setEditingWorker(null);
-      setWorkerForm({ name: "", email: "", password: "", role: "worker" });
+      setWorkerForm({
+        name: "",
+        email: "",
+        password: "",
+        role: "worker" as "worker" | "admin",
+      });
     }
     setIsWorkerDialogOpen(true);
   };
