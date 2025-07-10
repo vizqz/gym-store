@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     name: "",
     description: "",
     price: "",
-    category: "protein" as const,
+    category: "protein" as "protein" | "creatine" | "fat-burner" | "vitamins",
     stock: "",
     brand: "",
   });
