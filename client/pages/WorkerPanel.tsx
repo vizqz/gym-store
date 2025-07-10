@@ -43,6 +43,7 @@ import {
   History,
   X,
   Archive,
+  ExternalLink,
 } from "lucide-react";
 import { Product, Order } from "@shared/types";
 import { ProductsResponse, OrdersResponse } from "@shared/api";
