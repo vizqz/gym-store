@@ -333,6 +333,16 @@ export default function Cart() {
                 >
                   Vaciar carrito
                 </Button>
+
+                <Link to="/shop" className="block">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-fitness-yellow border-fitness-yellow hover:bg-fitness-yellow hover:text-fitness-black"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Continuar comprando
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
