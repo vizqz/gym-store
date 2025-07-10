@@ -78,9 +78,10 @@ export default function WorkerPanel() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsRes, ordersRes] = await Promise.all([
+        const [productsRes, ordersRes, movementsRes] = await Promise.all([
           fetch("/api/products"),
           fetch("/api/orders"),
+          fetch("/api/stock-movements"),
         ]);
 
         if (productsRes.ok) {
@@ -91,6 +92,11 @@ export default function WorkerPanel() {
         if (ordersRes.ok) {
           const ordersData: OrdersResponse = await ordersRes.json();
           setOrders(ordersData.orders);
+        }
+
+        if (movementsRes.ok) {
+          const movementsData = await movementsRes.json();
+          setStockMovements(movementsData.movements);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
