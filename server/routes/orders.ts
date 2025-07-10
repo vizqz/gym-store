@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import { OrdersResponse } from "../../shared/api";
-import { mockOrders } from "../../shared/mockData";
+import { getOrders, updateOrder } from "./orders-extended";
 
 export const handleGetOrders: RequestHandler = (req, res) => {
   try {
     const response: OrdersResponse = {
-      orders: mockOrders,
+      orders: getOrders(),
     };
 
     res.json(response);
@@ -20,19 +20,13 @@ export const handleUpdateOrder: RequestHandler = (req, res) => {
     const orderId = parseInt(req.params.id);
     const { status } = req.body;
 
-    const orderIndex = mockOrders.findIndex((o) => o.id === orderId);
+    const updatedOrder = updateOrder(orderId, { status });
 
-    if (orderIndex === -1) {
+    if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Update order status (in a real app, this would update the database)
-    mockOrders[orderIndex] = {
-      ...mockOrders[orderIndex],
-      status,
-    };
-
-    res.json({ order: mockOrders[orderIndex] });
+    res.json({ order: updatedOrder });
   } catch (error) {
     console.error("Update order error:", error);
     res.status(500).json({ error: "Internal server error" });
