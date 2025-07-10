@@ -1,5 +1,5 @@
-import { mockUsers } from "@shared/mockData";
-import { User } from "@shared/types";
+import { mockUsers } from "../../shared/mockData";
+import { User } from "../../shared/types";
 
 // Global users array (in production, this would be a database)
 export let users: User[] = [...mockUsers];
