@@ -686,19 +686,51 @@ Gracias.`;
                             <ExternalLink className="h-3 w-3 ml-1" />
                           </Button>
 
-                          {order.status === "pending" && (
+                          {canCancelOrder(order.status) && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                >
+                                  Cancelar Pedido
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    ¿Cancelar pedido?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    ¿Estás seguro de que quieres cancelar el
+                                    pedido #{order.id}? Esta acción no se puede
+                                    deshacer.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>
+                                    No, mantener pedido
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleCancelOrder(order.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Sí, cancelar pedido
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+
+                          {canReorder(order.status) && (
                             <Button
                               variant="outline"
                               size="sm"
-                              className="text-red-600 border-red-200 hover:bg-red-50"
+                              onClick={() => handleReorder(order)}
+                              className="text-fitness-yellow border-fitness-yellow hover:bg-fitness-yellow hover:text-fitness-black"
                             >
-                              Cancelar Pedido
-                            </Button>
-                          )}
-
-                          {order.status === "delivered" && (
-                            <Button variant="outline" size="sm">
-                              <Star className="h-3 w-3 mr-1" />
+                              <ShoppingBag className="h-3 w-3 mr-1" />
                               Reordenar
                             </Button>
                           )}
