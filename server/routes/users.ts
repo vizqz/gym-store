@@ -1,9 +1,12 @@
 import { RequestHandler } from "express";
-import { mockUsers } from "@shared/mockData";
 import { User } from "@shared/types";
-
-// Global users array (in production, this would be a database)
-let users = [...mockUsers];
+import {
+  getUsers,
+  getUserByEmail,
+  addUser,
+  updateUser,
+  deleteUser,
+} from "../data/users";
 
 export const handleRegisterUser: RequestHandler = (req, res) => {
   try {
