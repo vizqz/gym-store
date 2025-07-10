@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import { SearchDialog } from "./SearchDialog";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
