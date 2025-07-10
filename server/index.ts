@@ -3,9 +3,21 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleLogin } from "./routes/auth";
 import { handleGetProducts, handleGetProduct } from "./routes/products";
+import {
+  handleCreateProduct,
+  handleUpdateProduct,
+  handleDeleteProduct,
+  handleUpdateStock,
+} from "./routes/products-extended";
 import { handleGetOrders, handleUpdateOrder } from "./routes/orders";
 import { handleGetDashboard } from "./routes/dashboard";
 import { handleGetCustomerOrders } from "./routes/customer";
+import {
+  handleRegisterUser,
+  handleUpdateUser,
+  handleDeleteUser,
+  handleGetUsers,
+} from "./routes/users";
 
 export function createServer() {
   const app = express();
