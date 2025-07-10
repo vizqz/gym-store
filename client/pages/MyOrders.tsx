@@ -465,7 +465,9 @@ Gracias.`;
                                     ? "bg-blue-600 text-white"
                                     : order.status === "in-progress"
                                       ? "bg-purple-600 text-white"
-                                      : ""
+                                      : order.status === "cancelled"
+                                        ? "bg-red-600 text-white"
+                                        : ""
                               }
                             >
                               {getStatusText(order.status)}
