@@ -10,6 +10,7 @@ import {
 export const handleCreateProduct: RequestHandler = (req, res) => {
   try {
     const productData = req.body;
+    const products = getProducts();
     const newProduct: Product = {
       id: Math.max(...products.map((p) => p.id)) + 1,
       ...productData,
@@ -17,7 +18,7 @@ export const handleCreateProduct: RequestHandler = (req, res) => {
       reviews: productData.reviews || [],
     };
 
-    products.push(newProduct);
+    addProduct(newProduct);
     res.status(201).json({ product: newProduct });
   } catch (error) {
     res.status(500).json({ error: "Failed to create product" });
@@ -29,13 +30,12 @@ export const handleUpdateProduct: RequestHandler = (req, res) => {
     const productId = parseInt(req.params.id);
     const updateData = req.body;
 
-    const productIndex = products.findIndex((p) => p.id === productId);
-    if (productIndex === -1) {
+    const updatedProduct = updateProduct(productId, updateData);
+    if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    products[productIndex] = { ...products[productIndex], ...updateData };
-    res.json({ product: products[productIndex] });
+    res.json({ product: updatedProduct });
   } catch (error) {
     res.status(500).json({ error: "Failed to update product" });
   }
@@ -44,13 +44,12 @@ export const handleUpdateProduct: RequestHandler = (req, res) => {
 export const handleDeleteProduct: RequestHandler = (req, res) => {
   try {
     const productId = parseInt(req.params.id);
-    const productIndex = products.findIndex((p) => p.id === productId);
+    const deleted = deleteProduct(productId);
 
-    if (productIndex === -1) {
+    if (!deleted) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    products.splice(productIndex, 1);
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete product" });
@@ -62,13 +61,16 @@ export const handleUpdateStock: RequestHandler = (req, res) => {
     const productId = parseInt(req.params.id);
     const { quantity } = req.body;
 
-    const productIndex = products.findIndex((p) => p.id === productId);
-    if (productIndex === -1) {
+    const products = getProducts();
+    const product = products.find((p) => p.id === productId);
+    if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    products[productIndex].stock += quantity;
-    res.json({ product: products[productIndex] });
+    const updatedProduct = updateProduct(productId, {
+      stock: product.stock + quantity,
+    });
+    res.json({ product: updatedProduct });
   } catch (error) {
     res.status(500).json({ error: "Failed to update stock" });
   }
