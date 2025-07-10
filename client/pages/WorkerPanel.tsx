@@ -489,28 +489,19 @@ export default function WorkerPanel() {
                           </p>
                         </div>
 
-                        {canUpdateOrder(order.status) && (
-                          <div className="flex gap-2">
-                            {getNextStatus(order.status) && (
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  updateOrderStatus(
-                                    order.id,
-                                    getNextStatus(order.status)!,
-                                  )
-                                }
-                                className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
-                              >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                {getNextStatus(order.status) === "in-progress"
-                                  ? "Iniciar"
-                                  : getNextStatus(order.status) === "delivered"
-                                    ? "Completar"
-                                    : "Actualizar"}
-                              </Button>
-                            )}
-                            {order.status === "pending" && (
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            asChild
+                            className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
+                          >
+                            <Link to={`/orders/${order.id}`}>
+                              <ExternalLink className="h-3 w-3 mr-1" />
+                              Gestionar Orden
+                            </Link>
+                          </Button>
+                          {canUpdateOrder(order.status) &&
+                            order.status === "pending" && (
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -523,8 +514,7 @@ export default function WorkerPanel() {
                                 Cancelar
                               </Button>
                             )}
-                          </div>
-                        )}
+                        </div>
                       </div>
                     ))
                   )}
