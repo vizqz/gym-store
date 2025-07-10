@@ -5,14 +5,15 @@ import {
   Truck,
   CreditCard,
   Smartphone,
-  MessageCircle,
+  Building2,
   Phone,
-  Home,
   Clock,
   CheckCircle,
   ArrowLeft,
   ArrowRight,
-  ShoppingCart,
+  QrCode,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Stepper } from "@/components/ui/stepper";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
@@ -59,9 +61,42 @@ const steps = [
     icon: <CreditCard className="w-5 h-5" />,
   },
   {
+    title: "Procesar",
+    description: "Procesar pago",
+    icon: <CheckCircle className="w-5 h-5" />,
+  },
+  {
     title: "Confirmar",
     description: "Revisar pedido",
     icon: <CheckCircle className="w-5 h-5" />,
+  },
+];
+
+interface PaymentMethod {
+  id: "card" | "yape" | "bank";
+  name: string;
+  description: string;
+  icon: any;
+}
+
+const paymentMethods: PaymentMethod[] = [
+  {
+    id: "card",
+    name: "Tarjeta de Crédito/Débito",
+    description: "Visa, Mastercard, American Express",
+    icon: CreditCard,
+  },
+  {
+    id: "yape",
+    name: "Yape / Plin",
+    description: "Pago mediante código QR",
+    icon: QrCode,
+  },
+  {
+    id: "bank",
+    name: "Transferencia Bancaria",
+    description: "Depósito o transferencia directa",
+    icon: Building2,
   },
 ];
 
@@ -79,8 +114,15 @@ export default function Checkout() {
   const [delivery, setDelivery] = useState<DeliveryInfo>({
     method: "delivery",
   });
-  const [payment, setPayment] = useState<PaymentInfo>({
-    method: "cash",
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethod["id"]>("card");
+  const [paymentData, setPaymentData] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: "",
+    bankConfirmed: false,
   });
   const [customerInfo, setCustomerInfo] = useState({
     name: user?.name || "",
@@ -177,7 +219,7 @@ export default function Checkout() {
       }
     }
 
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -185,6 +227,59 @@ export default function Checkout() {
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handlePaymentProcess = async () => {
+    setIsLoading(true);
+
+    try {
+      // Validate payment based on method
+      if (selectedPaymentMethod === "card") {
+        if (
+          !paymentData.cardNumber ||
+          !paymentData.expiryDate ||
+          !paymentData.cvv ||
+          !paymentData.cardholderName
+        ) {
+          toast({
+            title: "Datos de tarjeta incompletos",
+            description: "Por favor completa todos los datos de la tarjeta",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (selectedPaymentMethod === "bank" && !paymentData.bankConfirmed) {
+        toast({
+          title: "Confirma la transferencia",
+          description: "Por favor confirma que has realizado la transferencia",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Simulate payment processing
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      toast({
+        title: "¡Pago procesado!",
+        description: "Tu pago ha sido procesado exitosamente",
+      });
+
+      setCurrentStep(4); // Move to final confirmation step
+    } catch (error) {
+      toast({
+        title: "Error en el pago",
+        description:
+          "Hubo un problema al procesar el pago. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -198,67 +293,10 @@ export default function Checkout() {
     navigate("/order-confirmation", { state: { orderData } });
   };
 
-  const generateWhatsAppMessage = () => {
-    const itemsList = items
-      .map((item) => {
-        const product = products.find((p) => p.id === item.productId);
-        return `• ${product?.name} x${item.quantity} - S/. ${((product?.price || 0) * item.quantity).toFixed(2)}`;
-      })
-      .join("\n");
-
-    const deliveryInfo =
-      delivery.method === "delivery"
-        ? `🏠 *Entrega a domicilio*\nDirección: ${delivery.address}\nDistrito: ${delivery.district}\nReferencia: ${delivery.reference || "Sin referencia"}`
-        : `🏪 *Recojo en tienda*\nUbicación: ${gymLocations.find((loc) => loc.id === delivery.location)?.name}\nDirección: ${gymLocations.find((loc) => loc.id === delivery.location)?.address}`;
-
-    return `🏋️‍♂️ *PEDIDO STYLO FITNESS* 🏋️‍♂️
-
-👤 *Cliente:* ${customerInfo.name}
-📞 *Teléfono:* ${customerInfo.phone}
-📧 *Email:* ${customerInfo.email}
-
-📦 *Productos:*
-${itemsList}
-
-${deliveryInfo}
-
-💰 *Resumen de pago:*
-Subtotal: S/. ${subtotal.toFixed(2)}
-${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "Recojo: S/. 0.00"}
-*TOTAL: S/. ${finalTotal.toFixed(2)}*
-
-💳 *Método de pago:* ${payment.method === "cash" ? "Efectivo" : payment.method === "yape" ? "Yape/Plin" : "WhatsApp"}
-
-¡Gracias por tu pedido! Te contactaremos pronto para confirmar. 💪`;
-  };
-
-  const handleWhatsAppOrder = () => {
-    const message = generateWhatsAppMessage();
-    const phoneNumber = "51987654321"; // Gym's WhatsApp number
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-
-    // Mark order as completed
-    const orderData = {
-      items,
-      customerInfo,
-      delivery,
-      payment,
-      total: finalTotal,
-      whatsappMessage: message,
-    };
-    handleOrderComplete(orderData);
-  };
-
   const handleCompleteOrder = async () => {
     setIsLoading(true);
 
     try {
-      if (payment.method === "whatsapp") {
-        handleWhatsAppOrder();
-        return;
-      }
-
       // Create order
       const orderData = {
         customerId: user?.id || 0,
@@ -267,9 +305,9 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
         customerPhone: customerInfo.phone,
         customerEmail: customerInfo.email,
         delivery,
-        payment,
+        payment: { method: selectedPaymentMethod },
         total: finalTotal,
-        status: "pending",
+        status: "confirmed",
         date: new Date().toISOString(),
         estimatedDelivery: new Date(
           Date.now() + 2 * 24 * 60 * 60 * 1000,
@@ -282,12 +320,12 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
       };
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       handleOrderComplete(orderData);
     } catch (error) {
       toast({
-        title: "Error al procesar pedido",
+        title: "Error al confirmar pedido",
         description: "Hubo un problema. Por favor intenta nuevamente.",
         variant: "destructive",
       });
@@ -444,50 +482,49 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
                     <Label className="text-base font-medium mb-4 block">
                       Selecciona la tienda *
                     </Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {gymLocations.map((location) => (
-                        <Card
-                          key={location.id}
-                          className={`cursor-pointer transition-all ${
-                            delivery.location === location.id
-                              ? "border-fitness-yellow bg-fitness-yellow/5"
-                              : "hover:border-fitness-yellow/50"
-                          }`}
-                          onClick={() =>
-                            setDelivery((prev) => ({
-                              ...prev,
-                              location: location.id,
-                            }))
-                          }
-                        >
-                          <CardContent className="p-6">
-                            <div className="flex items-start gap-3">
-                              <RadioGroupItem
-                                value={location.id}
-                                checked={delivery.location === location.id}
-                                className="mt-1"
-                              />
-                              <div className="flex-1">
-                                <h4 className="font-medium text-base mb-2">
-                                  {location.name}
-                                </h4>
-                                <p className="text-sm text-muted-foreground mb-3">
-                                  {location.address}
-                                </p>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                                  <Phone className="h-4 w-4" />
-                                  {location.phone}
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                  <Clock className="h-4 w-4" />
-                                  {location.hours}
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                    <RadioGroup
+                      value={delivery.location || ""}
+                      onValueChange={(value: "main-gym" | "branch-gym") =>
+                        setDelivery((prev) => ({ ...prev, location: value }))
+                      }
+                    >
+                      <div className="grid grid-cols-1 gap-4">
+                        {gymLocations.map((location) => (
+                          <div
+                            key={location.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <RadioGroupItem
+                              value={location.id}
+                              id={location.id}
+                            />
+                            <Card className="flex-1">
+                              <CardContent className="p-4">
+                                <Label
+                                  htmlFor={location.id}
+                                  className="cursor-pointer block"
+                                >
+                                  <h4 className="font-medium text-base mb-2">
+                                    {location.name}
+                                  </h4>
+                                  <p className="text-sm text-muted-foreground mb-3">
+                                    {location.address}
+                                  </p>
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                                    <Phone className="h-4 w-4" />
+                                    {location.phone}
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <Clock className="h-4 w-4" />
+                                    {location.hours}
+                                  </div>
+                                </Label>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        ))}
+                      </div>
+                    </RadioGroup>
                   </div>
                 )}
               </CardContent>
@@ -495,144 +532,328 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
           )}
 
           {currentStep === 2 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-fitness-yellow" />
+                  Información de Contacto
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Input
+                      id="name"
+                      value={customerInfo.name}
+                      onChange={(e) =>
+                        setCustomerInfo((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      placeholder="Ingresa tu nombre"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Teléfono *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={customerInfo.phone}
+                      onChange={(e) =>
+                        setCustomerInfo((prev) => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
+                      placeholder="+51 987 654 321"
+                      required
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="email">Email (opcional)</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={customerInfo.email}
+                      onChange={(e) =>
+                        setCustomerInfo((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                      placeholder="tu@email.com"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {currentStep === 3 && (
             <div className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CreditCard className="h-5 w-5 text-fitness-yellow" />
-                    Método de Pago
+                    Seleccionar Método de Pago
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <RadioGroup
-                    value={payment.method}
-                    onValueChange={(value: "cash" | "yape" | "whatsapp") =>
-                      setPayment({ method: value })
+                    value={selectedPaymentMethod}
+                    onValueChange={(value: PaymentMethod["id"]) =>
+                      setSelectedPaymentMethod(value)
                     }
                   >
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="cash" id="cash" />
-                        <Label
-                          htmlFor="cash"
-                          className="flex items-center gap-3 cursor-pointer flex-1"
-                        >
-                          <Home className="h-5 w-5" />
-                          <div>
-                            <div className="font-medium">Pago en efectivo</div>
-                            <div className="text-sm text-muted-foreground">
-                              {delivery.method === "delivery"
-                                ? "Contra entrega"
-                                : "Al recoger en tienda"}
-                            </div>
+                      {paymentMethods.map((method) => {
+                        const Icon = method.icon;
+                        return (
+                          <div
+                            key={method.id}
+                            className="flex items-center space-x-2 p-4 border rounded-lg"
+                          >
+                            <RadioGroupItem value={method.id} id={method.id} />
+                            <Label
+                              htmlFor={method.id}
+                              className="flex items-center gap-3 cursor-pointer flex-1"
+                            >
+                              <Icon className="h-5 w-5" />
+                              <div>
+                                <div className="font-medium">{method.name}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {method.description}
+                                </div>
+                              </div>
+                            </Label>
                           </div>
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="yape" id="yape" />
-                        <Label
-                          htmlFor="yape"
-                          className="flex items-center gap-3 cursor-pointer flex-1"
-                        >
-                          <Smartphone className="h-5 w-5" />
-                          <div>
-                            <div className="font-medium">Yape / Plin</div>
-                            <div className="text-sm text-muted-foreground">
-                              Te enviaremos los datos para transferir
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="whatsapp" id="whatsapp" />
-                        <Label
-                          htmlFor="whatsapp"
-                          className="flex items-center gap-3 cursor-pointer flex-1"
-                        >
-                          <MessageCircle className="h-5 w-5" />
-                          <div>
-                            <div className="font-medium">WhatsApp</div>
-                            <div className="text-sm text-muted-foreground">
-                              Envía tu pedido por WhatsApp para coordinar
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
+                        );
+                      })}
                     </div>
                   </RadioGroup>
+
+                  {/* Payment Form Based on Selected Method */}
+                  {selectedPaymentMethod === "card" && (
+                    <div className="mt-6 p-6 bg-muted/20 rounded-lg">
+                      <h4 className="font-medium mb-4">Datos de la Tarjeta</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <Label htmlFor="cardNumber">
+                            Número de tarjeta *
+                          </Label>
+                          <Input
+                            id="cardNumber"
+                            value={paymentData.cardNumber}
+                            onChange={(e) =>
+                              setPaymentData((prev) => ({
+                                ...prev,
+                                cardNumber: e.target.value,
+                              }))
+                            }
+                            placeholder="1234 5678 9012 3456"
+                            maxLength={19}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="expiryDate">
+                            Fecha de vencimiento *
+                          </Label>
+                          <Input
+                            id="expiryDate"
+                            value={paymentData.expiryDate}
+                            onChange={(e) =>
+                              setPaymentData((prev) => ({
+                                ...prev,
+                                expiryDate: e.target.value,
+                              }))
+                            }
+                            placeholder="MM/AA"
+                            maxLength={5}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="cvv">CVV *</Label>
+                          <Input
+                            id="cvv"
+                            value={paymentData.cvv}
+                            onChange={(e) =>
+                              setPaymentData((prev) => ({
+                                ...prev,
+                                cvv: e.target.value,
+                              }))
+                            }
+                            placeholder="123"
+                            maxLength={4}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="cardholderName">
+                            Nombre del titular *
+                          </Label>
+                          <Input
+                            id="cardholderName"
+                            value={paymentData.cardholderName}
+                            onChange={(e) =>
+                              setPaymentData((prev) => ({
+                                ...prev,
+                                cardholderName: e.target.value,
+                              }))
+                            }
+                            placeholder="Como aparece en la tarjeta"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedPaymentMethod === "yape" && (
+                    <div className="mt-6 p-6 bg-muted/20 rounded-lg text-center">
+                      <h4 className="font-medium mb-4">Pago con Yape/Plin</h4>
+                      <div className="bg-white p-4 rounded-lg inline-block mb-4">
+                        {/* Simulated QR Code */}
+                        <div className="w-48 h-48 bg-gray-100 flex items-center justify-center border rounded">
+                          <QrCode className="h-24 w-24 text-gray-400" />
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Escanea el código QR con tu app de Yape o Plin
+                      </p>
+                      <p className="text-lg font-bold text-fitness-yellow">
+                        Monto: S/. {finalTotal.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Después de pagar, presiona "Confirmar Pago"
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedPaymentMethod === "bank" && (
+                    <div className="mt-6 p-6 bg-muted/20 rounded-lg">
+                      <h4 className="font-medium mb-4">
+                        Transferencia Bancaria
+                      </h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Banco:</span>
+                          <span>BCP</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Cuenta Corriente:</span>
+                          <span>194-123456789-0-12</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                "194-123456789-0-12",
+                              );
+                              toast({
+                                title: "Copiado",
+                                description: "Número de cuenta copiado",
+                              });
+                            }}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">CCI:</span>
+                          <span>002-194-001234567890-12</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                "002-194-001234567890-12",
+                              );
+                              toast({
+                                title: "Copiado",
+                                description: "CCI copiado",
+                              });
+                            }}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Titular:</span>
+                          <span>Stylo Fitness SAC</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-fitness-yellow">
+                          <span>Monto a transferir:</span>
+                          <span>S/. {finalTotal.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center space-x-2">
+                        <Checkbox
+                          id="bankConfirmed"
+                          checked={paymentData.bankConfirmed}
+                          onCheckedChange={(checked) =>
+                            setPaymentData((prev) => ({
+                              ...prev,
+                              bankConfirmed: checked as boolean,
+                            }))
+                          }
+                        />
+                        <Label htmlFor="bankConfirmed" className="text-sm">
+                          Confirmo que he realizado la transferencia
+                        </Label>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
-              {/* Customer Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Phone className="h-5 w-5 text-fitness-yellow" />
-                    Información de Contacto
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="name">Nombre completo *</Label>
-                      <Input
-                        id="name"
-                        value={customerInfo.name}
-                        onChange={(e) =>
-                          setCustomerInfo((prev) => ({
-                            ...prev,
-                            name: e.target.value,
-                          }))
-                        }
-                        placeholder="Ingresa tu nombre"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">Teléfono *</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={customerInfo.phone}
-                        onChange={(e) =>
-                          setCustomerInfo((prev) => ({
-                            ...prev,
-                            phone: e.target.value,
-                          }))
-                        }
-                        placeholder="+51 987 654 321"
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label htmlFor="email">Email (opcional)</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={customerInfo.email}
-                        onChange={(e) =>
-                          setCustomerInfo((prev) => ({
-                            ...prev,
-                            email: e.target.value,
-                          }))
-                        }
-                        placeholder="tu@email.com"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Process Payment Button */}
+              <div className="flex justify-center">
+                <Button
+                  onClick={handlePaymentProcess}
+                  disabled={isLoading}
+                  size="lg"
+                  className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-fitness-black mr-2"></div>
+                      Procesando Pago...
+                    </>
+                  ) : selectedPaymentMethod === "card" ? (
+                    "Pagar Ahora"
+                  ) : selectedPaymentMethod === "yape" ? (
+                    "Confirmar Pago"
+                  ) : (
+                    "Confirmar Transferencia"
+                  )}
+                </Button>
+              </div>
             </div>
           )}
 
-          {currentStep === 3 && (
+          {currentStep === 4 && (
             <Card>
               <CardHeader>
-                <CardTitle>Resumen del Pedido</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Resumen Final del Pedido
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Payment Success Message */}
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
+                    <Check className="h-5 w-5" />
+                    <span className="font-medium">
+                      ¡Pago procesado exitosamente!
+                    </span>
+                  </div>
+                  <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                    Tu pago ha sido confirmado y procesado correctamente.
+                  </p>
+                </div>
+
                 {/* Products */}
                 <div className="space-y-4">
                   <h4 className="font-medium">Productos</h4>
@@ -716,10 +937,14 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
                     Pago
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    {payment.method === "cash" && "Pago en efectivo"}
-                    {payment.method === "yape" && "Yape / Plin"}
-                    {payment.method === "whatsapp" &&
-                      "Coordinación por WhatsApp"}
+                    {selectedPaymentMethod === "card" &&
+                      "Tarjeta de Crédito/Débito"}
+                    {selectedPaymentMethod === "yape" && "Yape / Plin"}
+                    {selectedPaymentMethod === "bank" &&
+                      "Transferencia Bancaria"}
+                  </p>
+                  <p className="text-sm text-green-600 font-medium">
+                    ✓ Pago confirmado
                   </p>
                 </div>
 
@@ -736,7 +961,7 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
                     <span>S/. {deliveryFee.toFixed(2)}</span>
                   </div>
                   <div className="border-t pt-3 flex justify-between text-xl font-bold">
-                    <span>Total:</span>
+                    <span>Total Pagado:</span>
                     <span className="text-fitness-yellow">
                       S/. {finalTotal.toFixed(2)}
                     </span>
@@ -751,7 +976,7 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={currentStep === 1}
+              disabled={currentStep === 1 || currentStep === 4}
               size="lg"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -767,7 +992,7 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
                 Siguiente
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
-            ) : (
+            ) : currentStep === 4 ? (
               <Button
                 onClick={handleCompleteOrder}
                 disabled={isLoading}
@@ -775,20 +1000,15 @@ ${delivery.method === "delivery" ? `Delivery: S/. ${deliveryFee.toFixed(2)}` : "
                 className="bg-fitness-yellow text-fitness-black hover:bg-fitness-yellow/90"
               >
                 {isLoading ? (
-                  "Procesando..."
-                ) : payment.method === "whatsapp" ? (
-                  <>
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Enviar por WhatsApp
-                  </>
+                  "Finalizando..."
                 ) : (
                   <>
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    Confirmar Pedido
+                    Finalizar Pedido
                   </>
                 )}
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
