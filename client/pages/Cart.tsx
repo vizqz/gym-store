@@ -9,7 +9,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
-import { CheckoutStepper } from "@/components/CheckoutStepper";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,6 @@ export default function Cart() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showCheckoutStepper, setShowCheckoutStepper] = useState(false);
 
   const handleRemoveItem = (productId: number, productName: string) => {
     removeItem(productId);
@@ -68,7 +67,7 @@ export default function Cart() {
       navigate("/login");
       return;
     }
-    setShowCheckoutStepper(true);
+    navigate("/checkout");
   };
 
   useEffect(() => {
@@ -332,14 +331,6 @@ export default function Cart() {
                 </Button>
               </CardContent>
             </Card>
-
-            {/* Checkout Stepper */}
-            <CheckoutStepper
-              products={products}
-              isOpen={showCheckoutStepper}
-              onClose={() => setShowCheckoutStepper(false)}
-              onOrderComplete={handleOrderComplete}
-            />
           </div>
         </div>
       </div>
