@@ -213,14 +213,7 @@ export function Navigation() {
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start"
-                >
-                  <Search className="h-4 w-4 mr-2" />
-                  Buscar productos
-                </Button>
+                <SearchDialog />
               </div>
             </div>
           </div>
