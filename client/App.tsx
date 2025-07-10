@@ -58,6 +58,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/orders/:orderId"
+                element={
+                  <ProtectedRoute adminOrWorker>
+                    <OrderManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/my-orders"
                 element={
                   <ProtectedRoute requiredRole="customer">
