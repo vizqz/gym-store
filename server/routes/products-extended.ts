@@ -1,9 +1,11 @@
 import { RequestHandler } from "express";
-import { mockProducts } from "@shared/mockData";
 import { Product } from "@shared/types";
-
-// Global products array (in production, this would be a database)
-let products = [...mockProducts];
+import {
+  getProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+} from "../data/products";
 
 export const handleCreateProduct: RequestHandler = (req, res) => {
   try {
