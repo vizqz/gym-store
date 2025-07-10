@@ -83,9 +83,7 @@ export function Navigation() {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {/* Search */}
-            <Button variant="ghost" size="sm" className="hidden sm:flex">
-              <Search className="h-4 w-4" />
-            </Button>
+            <SearchDialog />
 
             {/* User Menu */}
             {user ? (
