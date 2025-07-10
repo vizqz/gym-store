@@ -10,6 +10,7 @@ import {
   handleUpdateStock,
 } from "./routes/products-extended";
 import { handleGetOrders, handleUpdateOrder } from "./routes/orders";
+import { handleGetOrder } from "./routes/orders-extended";
 import { handleGetDashboard } from "./routes/dashboard";
 import { handleGetCustomerOrders } from "./routes/customer";
 import {
