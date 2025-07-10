@@ -188,17 +188,29 @@ export function Navigation() {
               </Button>
             )}
 
-            {/* Cart */}
-            <Link to="/cart">
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="h-4 w-4" />
-                {getCartItemCount() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                    {getCartItemCount()}
-                  </span>
-                )}
+            {/* Back to Store for Admin/Worker */}
+            {!showMainNav && (
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/">
+                  <Package className="h-4 w-4 mr-1" />
+                  Tienda
+                </Link>
               </Button>
-            </Link>
+            )}
+
+            {/* Cart - only for customers */}
+            {showMainNav && (
+              <Link to="/cart">
+                <Button variant="ghost" size="sm" className="relative">
+                  <ShoppingCart className="h-4 w-4" />
+                  {getCartItemCount() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-fitness-yellow text-fitness-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                      {getCartItemCount()}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile menu button */}
             <Button
