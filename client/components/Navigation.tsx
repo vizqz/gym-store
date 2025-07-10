@@ -105,8 +105,8 @@ export function Navigation() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-            {/* Search */}
-            <SearchDialog />
+            {/* Search - only for customers */}
+            {showMainNav && <SearchDialog />}
 
             {/* User Menu */}
             {user ? (
