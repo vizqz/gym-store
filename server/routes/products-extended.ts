@@ -6,6 +6,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "../data/products";
+import { addStockMovement } from "../data/stock-movements";
 
 export const handleCreateProduct: RequestHandler = (req, res) => {
   try {
