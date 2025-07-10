@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { User } from "@shared/types";
+import { User } from "../../shared/types";
 import {
   getUsers,
   getUserByEmail,
