@@ -772,7 +772,12 @@ export default function WorkerPanel() {
                         className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-sm">{product.name}</p>
+                          <Link
+                            to={`/products/${product.id}`}
+                            className="font-medium text-sm hover:text-fitness-yellow transition-colors"
+                          >
+                            {product.name}
+                          </Link>
                           <p className="text-xs text-muted-foreground">
                             {product.brand}
                           </p>
