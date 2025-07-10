@@ -402,12 +402,13 @@ Gracias.`;
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-6">
               <TabsTrigger value="all">Todos</TabsTrigger>
               <TabsTrigger value="pending">Pendiente</TabsTrigger>
               <TabsTrigger value="confirmed">Confirmado</TabsTrigger>
               <TabsTrigger value="in-progress">En Proceso</TabsTrigger>
               <TabsTrigger value="delivered">Entregado</TabsTrigger>
+              <TabsTrigger value="cancelled">Cancelado</TabsTrigger>
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-6">
