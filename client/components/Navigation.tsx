@@ -31,6 +31,9 @@ export function Navigation() {
   const { user, logout } = useAuth();
   const { getCartItemCount } = useCart();
 
+  // Hide main navigation for admin/worker roles
+  const showMainNav = !user || user.role === "customer";
+
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/shop", label: "Tienda" },
