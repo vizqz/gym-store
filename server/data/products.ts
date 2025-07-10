@@ -1,5 +1,5 @@
-import { mockProducts } from "@shared/mockData";
-import { Product } from "@shared/types";
+import { mockProducts } from "../../shared/mockData";
+import { Product } from "../../shared/types";
 
 // Global products array (in production, this would be a database)
 export let products: Product[] = [...mockProducts];
