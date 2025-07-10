@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Search, Filter, Zap, Flame, Dumbbell, Sparkles } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { ProductCard } from "@/components/ProductCard";
