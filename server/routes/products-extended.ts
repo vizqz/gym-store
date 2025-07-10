@@ -60,7 +60,7 @@ export const handleDeleteProduct: RequestHandler = (req, res) => {
 export const handleUpdateStock: RequestHandler = (req, res) => {
   try {
     const productId = parseInt(req.params.id);
-    const { quantity } = req.body;
+    const { quantity, workerName, reason } = req.body;
 
     const products = getProducts();
     const product = products.find((p) => p.id === productId);
@@ -71,6 +71,18 @@ export const handleUpdateStock: RequestHandler = (req, res) => {
     const updatedProduct = updateProduct(productId, {
       stock: product.stock + quantity,
     });
+
+    // Add stock movement record
+    addStockMovement({
+      productId,
+      productName: product.name,
+      quantity,
+      date: new Date().toISOString(),
+      workerName: workerName || "Unknown Worker",
+      type: "addition",
+      reason: reason || "Stock updated",
+    });
+
     res.json({ product: updatedProduct });
   } catch (error) {
     res.status(500).json({ error: "Failed to update stock" });
