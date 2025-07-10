@@ -91,7 +91,7 @@ export default function AdminDashboard() {
     name: "",
     email: "",
     password: "",
-    role: "worker" as const,
+    role: "worker" as "worker" | "admin",
   });
 
   const [productForm, setProductForm] = useState({
