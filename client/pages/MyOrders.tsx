@@ -190,6 +190,8 @@ export default function MyOrders() {
         return <Truck className="h-4 w-4 text-purple-500" />;
       case "delivered":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "cancelled":
+        return <Package className="h-4 w-4 text-red-500" />;
       default:
         return <Package className="h-4 w-4 text-gray-500" />;
     }
