@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
 import { LoginRequest, AuthResponse } from "../../shared/api";
-import { mockUsers } from "../../shared/mockData";
+import { getUsers } from "../data/users";
 
 export const handleLogin: RequestHandler = (req, res) => {
   try {
     const { email, password }: LoginRequest = req.body;
 
     // Find user by email and password
-    const user = mockUsers.find(
+    const user = getUsers().find(
       (u) => u.email === email && u.password === password,
     );
 
