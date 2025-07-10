@@ -45,9 +45,11 @@ export default function Index() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Button variant="outline" size="lg">
-                  Ver Ofertas Especiales
-                </Button>
+                <Link to="/shop">
+                  <Button variant="outline" size="lg">
+                    Ver Ofertas Especiales
+                  </Button>
+                </Link>
               </div>
 
               {/* Stats */}
