@@ -66,6 +66,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route path="/products/:productId" element={<ProductDetail />} />
               <Route
                 path="/my-orders"
                 element={
