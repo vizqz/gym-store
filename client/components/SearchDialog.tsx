@@ -28,8 +28,9 @@ export function SearchDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="hidden sm:flex">
-          <Search className="h-4 w-4" />
+        <Button variant="ghost" size="sm">
+          <Search className="h-4 w-4 sm:mr-0 mr-2" />
+          <span className="sm:hidden">Buscar productos</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
