@@ -12,6 +12,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
