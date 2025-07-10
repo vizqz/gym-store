@@ -46,7 +46,7 @@ import {
   Archive,
   ExternalLink,
 } from "lucide-react";
-import { Product, Order } from "@shared/types";
+import { Product, Order, StockMovement } from "@shared/types";
 import { ProductsResponse, OrdersResponse } from "@shared/api";
 import { useAuth } from "@/hooks/useAuth";
 
