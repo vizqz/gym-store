@@ -100,7 +100,7 @@ export function Navigation() {
                             ? "secondary"
                             : "default"
                       }
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs flex items-center justify-center font-medium"
                     >
                       {user.role === "admin"
                         ? "A"
