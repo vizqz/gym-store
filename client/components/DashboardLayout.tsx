@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { DashboardSidebar } from "./DashboardSidebar";
+import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
