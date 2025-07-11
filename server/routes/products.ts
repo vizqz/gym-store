@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import { ProductsResponse } from "../../shared/api";
-import { mockProducts } from "../../shared/mockData";
+import { getProducts } from "../data/products";
 
 export const handleGetProducts: RequestHandler = (req, res) => {
   try {
     const response: ProductsResponse = {
-      products: mockProducts,
+      products: getProducts(),
     };
 
     res.json(response);
@@ -18,7 +18,7 @@ export const handleGetProducts: RequestHandler = (req, res) => {
 export const handleGetProduct: RequestHandler = (req, res) => {
   try {
     const productId = parseInt(req.params.id);
-    const product = mockProducts.find((p) => p.id === productId);
+    const product = getProducts().find((p) => p.id === productId);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });

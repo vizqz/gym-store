@@ -105,3 +105,14 @@ export interface DashboardStats {
     totalSold: number;
   }>;
 }
+
+export interface StockMovement {
+  id: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  date: string;
+  workerName: string;
+  type: "addition" | "reduction";
+  reason?: string;
+}

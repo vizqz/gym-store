@@ -16,8 +16,10 @@ import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import AdminDashboard from "./pages/AdminDashboard";
-import WorkerPanel from "./pages/WorkerPanel";
+import ModernAdminDashboard from "./pages/ModernAdminDashboard";
+import ModernWorkerPanel from "./pages/ModernWorkerPanel";
+import OrderManagement from "./pages/OrderManagement";
+import ProductDetail from "./pages/ProductDetail";
 import MyOrders from "./pages/MyOrders";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import NotFound from "./pages/NotFound";
@@ -44,7 +46,7 @@ const App = () => (
                 path="/admin"
                 element={
                   <ProtectedRoute requiredRole="admin">
-                    <AdminDashboard />
+                    <ModernAdminDashboard />
                   </ProtectedRoute>
                 }
               />
@@ -52,10 +54,19 @@ const App = () => (
                 path="/worker"
                 element={
                   <ProtectedRoute adminOrWorker>
-                    <WorkerPanel />
+                    <ModernWorkerPanel />
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/orders/:orderId"
+                element={
+                  <ProtectedRoute adminOrWorker>
+                    <OrderManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/products/:productId" element={<ProductDetail />} />
               <Route
                 path="/my-orders"
                 element={
