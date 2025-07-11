@@ -40,9 +40,10 @@ export function DashboardLayout({
                 <p className="text-muted-foreground mt-1">{description}</p>
               )}
             </div>
-            {headerActions && (
-              <div className="flex items-center space-x-3">{headerActions}</div>
-            )}
+            <div className="flex items-center space-x-3">
+              <ThemeToggle />
+              {headerActions}
+            </div>
           </div>
         </header>
 
