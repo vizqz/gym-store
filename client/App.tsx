@@ -54,7 +54,7 @@ const App = () => (
                 path="/worker"
                 element={
                   <ProtectedRoute adminOrWorker>
-                    <WorkerPanel />
+                    <ModernWorkerPanel />
                   </ProtectedRoute>
                 }
               />
